@@ -1,0 +1,128 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #141416;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 70px;
+}
+
+/* Logo image styling */
+.nav-logo img {
+  height: 100px;
+  width: auto;
+  border-radius: 8px;
+  margin-right: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Optional: subtle shadow */
+}
+
+.nav-items {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  font-family: open sans, sans-serif;
+  font-size: 14px;
+  padding: 0 10px;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: #fd6262;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  gap: 10px;
+}
+
+.nav-button .login {
+  background: none;
+  border: none;
+  color: #fd6262;
+  text-decoration: none;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.get-started .get-started-btn {
+  background: none;
+  border: 1px solid #fff;
+  border-radius: 0.5rem;
+  font-size: 17px;
+  padding: 13px 13px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.get-started button:hover {
+  background: violet;
+  color: #141416;
+  transition: background 0.5s, color 0.5s;
+}
+
+.nav-toggle {
+  display: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+/* ✅ Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 20px; /* smaller padding on mobile */
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    flex-direction: column;
+    background: #141416;
+    width: 200px;
+    padding: 20px;
+    display: none;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  /* Hide Get Started button */
+  .get-started {
+    display: none;
+  }
+
+  /* Smaller profile image */
+  .profilelogo img {
+    height: 1.4rem;
+    width: auto;
+  }
+
+  /* Smaller login button */
+  .nav-button .login {
+    font-size: 14px;
+    padding: 4px 6px;
+  }
+}
