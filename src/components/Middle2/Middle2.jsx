@@ -37,7 +37,7 @@ export default function Middle2() {
   }, []);
 
   return (
-    <div className="box">
+    <div className="boxA">
       <div className="box1">
         <h2
           ref={h2Ref}

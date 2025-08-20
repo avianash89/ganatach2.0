@@ -3,7 +3,6 @@
   color: #fff;
   height: 80rem;
   padding: 15px 70px;
-  margin-top: 20rem;
   display: flex;
   font-family: open sans, sans-serif;
   position: relative;
@@ -157,7 +156,6 @@
     flex-direction: column;
     height: auto;
     padding: 15px 20px;
-    margin-top: 8rem;
     gap: 2rem;
   }
 
@@ -193,7 +191,6 @@
 
 @media (max-width: 768px) {
   .box {
-    margin-top: 6rem;
     padding: 12px;
     gap: 1.5rem;
   }
@@ -222,7 +219,6 @@
 @media (max-width: 480px) {
   .box {
     padding: 10px 5px;
-    margin-top: 4rem;
     gap: 1rem;
   }
 

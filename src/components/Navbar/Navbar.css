@@ -114,6 +114,10 @@
     display: none;
   }
 
+  .login {
+    display: none; /* Hide login button on mobile */
+  }
+
   /* Smaller profile image */
   .profilelogo img {
     height: 1.4rem;

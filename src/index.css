@@ -4,15 +4,3 @@
   box-sizing: border-box;
 }
 
-body {
-  background-image: url("./assets/BgImage.avif");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  height: 1300px;
-  object-fit: cover;
-  object-position: 50% 100%;
-}
