@@ -1,6 +1,6 @@
-export const Container = ({ children }) => {
+export const Container = ({ children, className = '' }) => {
     return (
-        <div className="max-w-[88rem] mx-auto px-4 sm:px-6 md:px-10">
+        <div className={`${className} max-w-[88rem] mx-auto md:px-10`}>
             {children}
         </div>
     )
