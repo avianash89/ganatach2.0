@@ -10,7 +10,12 @@ import {
   IconMail,
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaInstagram, FaFacebook, FaYoutube, FaXTwitter } from "react-icons/fa6";
+import {
+  FaInstagram,
+  FaFacebook,
+  FaYoutube,
+  FaXTwitter,
+} from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
@@ -41,7 +46,25 @@ export default function Navbar() {
         },
       ],
     },
-
+    {
+      name: "Online Training",
+      dropdown: [
+        { name: "Data Science", link: "/onlinetraining/dataScience" },
+        { name: "Artificial Intelligence", link: "/onlinetraining/ai" },
+        { name: "Machine Learning", link: "/onlinetraining/ml" },
+        {
+          name: "AWS Solution Architect",
+          link: "/onlinetraining/awsSolutionArchitect",
+        },
+        { name: "DevOps", link: "/onlinetraining/devops" },
+        {
+          name: "Azure Solution Architect",
+          link: "/onlinetraining/azureSolutionArchitect",
+        },
+        { name: "Linux Administration", link: "/onlinetraining/linuxadmin" },
+        { name: "Advance Python Programming", link: "/onlinetraining/python" },
+      ],
+    },
     { name: "Course Curriculum", link: "/course" },
     { name: "About", link: "/about" },
     { name: "Contact", link: "/contact" },
@@ -87,28 +110,28 @@ export default function Navbar() {
             {/* Social Links */}
             <div className="flex items-center gap-3">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/ganatech901/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-pink-500">
                 <FaInstagram />
               </a>
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/ganatech.co.in"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-blue-600">
                 <FaFacebook />
               </a>
               <a
-                href="https://youtube.com"
+                href="https://www.youtube.com/channel/UC1T_OImlb4wBhbvcJ3-w_Hg"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-red-600">
                 <FaYoutube />
               </a>
               <a
-                href="https://x.com"
+                href="https://x.com/ganatech123"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-gray-800">
@@ -137,11 +160,19 @@ export default function Navbar() {
           {/* Logo */}
           <motion.div className="flex justify-center items-center gap-x-2 cursor-pointer">
             <div className="md:w-10 md:h-10 my-2 overflow-hidden rounded-full h-8 w-8">
-              <img src={logo} className="h-full w-full object-cover" />
+              <Link to="/">
+                <img
+                  src={logo}
+                  alt="Logo"
+                  className="h-full w-full object-cover cursor-pointer"
+                />
+              </Link>
             </div>
+            <Link to="/">
             <span className="md:text-xl text-md font-logo font-medium text-white capitalize">
               Gana Tech Solution
             </span>
+            </Link>
           </motion.div>
 
           {/* Desktop Links */}
@@ -206,7 +237,7 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* ✅ Mobile Menu */}
+        {/* ✅ Mobile Menu (scrollable) */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
@@ -214,12 +245,12 @@ export default function Navbar() {
               animate="show"
               exit="exit"
               variants={menuVariants}
-              className="absolute top-16 left-0 w-full h-screen bg-bgprimary px-6 py-10 md:hidden">
-              <div className="flex flex-col gap-y-6 text-white text-lg font-logo font-extralight">
+              className="absolute top-16 left-0 w-full h-screen bg-bgprimary px-6 py-10 md:hidden overflow-y-auto">
+              <div className="flex flex-col gap-y-6 mb-8 text-white text-lg font-logo font-extralight">
                 {/* Menu Links */}
                 {link.map((item) =>
                   item.dropdown ? (
-                    <div key={item.name}> 
+                    <div key={item.name}>
                       <span className="font-semibold text-white">
                         {item.name}
                       </span>
@@ -260,13 +291,13 @@ export default function Navbar() {
                   <Link
                     to="/student-registration"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-gray-200">
+                    className="hover:text-primary">
                     Student Registration
                   </Link>
                   <Link
                     to="/trainer-registration"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-gray-200">
+                    className="hover:text-primary">
                     Trainer Registration
                   </Link>
                   <Button
