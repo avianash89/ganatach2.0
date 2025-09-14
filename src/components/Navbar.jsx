@@ -10,6 +10,7 @@ import {
   IconMail,
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FaInstagram, FaFacebook, FaYoutube, FaXTwitter } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
@@ -24,13 +25,24 @@ export default function Navbar() {
         { name: "Data Science", link: "/classRoomTraining/dataScience" },
         { name: "Artificial Intelligence", link: "/classRoomTraining/ai" },
         { name: "Machine Learning", link: "/classRoomTraining/ml" },
-        { name: "AWS Solution Architect", link: "/classRoomTraining/awsSolutionArchitect" },
+        {
+          name: "AWS Solution Architect",
+          link: "/classRoomTraining/awsSolutionArchitect",
+        },
         { name: "DevOps", link: "/classRoomTraining/devops" },
-        { name: "Azure Solution Architect", link: "/classRoomTraining/azureSolutionArchitect" },
+        {
+          name: "Azure Solution Architect",
+          link: "/classRoomTraining/azureSolutionArchitect",
+        },
         { name: "Linux Administration", link: "/classRoomTraining/linuxadmin" },
-        { name: "Advance Python Programming", link: "/classRoomTraining/python" },
+        {
+          name: "Advance Python Programming",
+          link: "/classRoomTraining/python",
+        },
       ],
     },
+
+    { name: "Course Curriculum", link: "/course" },
     { name: "About", link: "/about" },
     { name: "Contact", link: "/contact" },
   ];
@@ -74,10 +86,34 @@ export default function Navbar() {
             </div>
             {/* Social Links */}
             <div className="flex items-center gap-3">
-              <a href="#" className="hover:text-gray-200">🌐</a>
-              <a href="#" className="hover:text-gray-200">🐦</a>
-              <a href="#" className="hover:text-gray-200">▶️</a>
-              <a href="#" className="hover:text-gray-200">📸</a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-pink-500">
+                <FaInstagram />
+              </a>
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-600">
+                <FaFacebook />
+              </a>
+              <a
+                href="https://youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-red-600">
+                <FaYoutube />
+              </a>
+              <a
+                href="https://x.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gray-800">
+                <FaXTwitter />
+              </a>
             </div>
           </div>
 
@@ -116,9 +152,10 @@ export default function Navbar() {
                   key={i}
                   className="relative"
                   onMouseEnter={() => setDropdownOpen(item.name)}
-                  onMouseLeave={() => setDropdownOpen(null)}
-                >
-                  <span className="hover:text-primary cursor-pointer">{item.name}</span>
+                  onMouseLeave={() => setDropdownOpen(null)}>
+                  <span className="hover:text-primary cursor-pointer">
+                    {item.name}
+                  </span>
                   <AnimatePresence>
                     {dropdownOpen === item.name && (
                       <motion.div
@@ -126,14 +163,12 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 bg-white text-black font-light rounded-lg shadow-lg w-48 max-h-60 overflow-y-auto"
-                      >
+                        className="absolute top-full left-0 mt-2 bg-white text-black font-light rounded-lg shadow-lg w-48 max-h-60 overflow-y-auto">
                         {item.dropdown.map((sub, idx) => (
                           <Link
                             key={idx}
                             to={sub.link}
-                            className="block px-4 py-2 hover:bg-gray-200"
-                          >
+                            className="block px-4 py-2 hover:bg-gray-200">
                             {sub.name}
                           </Link>
                         ))}
@@ -145,8 +180,7 @@ export default function Navbar() {
                 <Link
                   key={i}
                   to={item.link}
-                  className="hover:text-primary transition-colors duration-300 hover:cursor-pointer"
-                >
+                  className="hover:text-primary transition-colors duration-300 hover:cursor-pointer">
                   {item.name}
                 </Link>
               )
@@ -157,9 +191,17 @@ export default function Navbar() {
           {/* Mobile Toggle */}
           <div className="md:hidden flex items-center justify-center cursor-pointer w-9 h-9">
             {menuOpen ? (
-              <IconX stroke={1.5} className="w-full h-full text-white" onClick={() => setMenuOpen(false)} />
+              <IconX
+                stroke={1.5}
+                className="w-full h-full text-white"
+                onClick={() => setMenuOpen(false)}
+              />
             ) : (
-              <IconMenu stroke={1.5} className="w-full h-full text-white" onClick={() => setMenuOpen(true)} />
+              <IconMenu
+                stroke={1.5}
+                className="w-full h-full text-white"
+                onClick={() => setMenuOpen(true)}
+              />
             )}
           </div>
         </nav>
@@ -172,22 +214,22 @@ export default function Navbar() {
               animate="show"
               exit="exit"
               variants={menuVariants}
-              className="absolute top-16 left-0 w-full h-screen bg-bgprimary px-6 py-10 md:hidden"
-            >
+              className="absolute top-16 left-0 w-full h-screen bg-bgprimary px-6 py-10 md:hidden">
               <div className="flex flex-col gap-y-6 text-white text-lg font-logo font-extralight">
                 {/* Menu Links */}
                 {link.map((item) =>
                   item.dropdown ? (
-                    <div key={item.name}>
-                      <span className="font-semibold text-white">{item.name}</span>
+                    <div key={item.name}> 
+                      <span className="font-semibold text-white">
+                        {item.name}
+                      </span>
                       <div className="ml-4 mt-2 flex flex-col gap-y-2 max-h-40 overflow-y-auto">
                         {item.dropdown.map((sub) => (
                           <Link
                             key={sub.name}
                             to={sub.link}
                             onClick={() => setMenuOpen(false)}
-                            className="text-sm hover:text-primary"
-                          >
+                            className="text-sm hover:text-primary">
                             {sub.name}
                           </Link>
                         ))}
@@ -198,8 +240,7 @@ export default function Navbar() {
                       <Link
                         to={item.link}
                         onClick={() => setMenuOpen(false)}
-                        className="hover:text-primary transition-colors duration-300"
-                      >
+                        className="hover:text-primary transition-colors duration-300">
                         {item.name}
                       </Link>
                     </motion.div>
@@ -207,23 +248,25 @@ export default function Navbar() {
                 )}
 
                 {/* Extra options */}
-                <motion.div variants={linkVariants} className="flex flex-col gap-y-6 w-full">
+                <motion.div
+                  variants={linkVariants}
+                  className="flex flex-col gap-y-6 w-full">
                   <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
                     <IconUserCircle />
-                    <span className="text-sm font-semibold capitalize">Log in</span>
+                    <span className="text-sm font-semibold capitalize">
+                      Log in
+                    </span>
                   </div>
                   <Link
                     to="/student-registration"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-gray-200"
-                  >
+                    className="hover:text-gray-200">
                     Student Registration
                   </Link>
                   <Link
                     to="/trainer-registration"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-gray-200"
-                  >
+                    className="hover:text-gray-200">
                     Trainer Registration
                   </Link>
                   <Button

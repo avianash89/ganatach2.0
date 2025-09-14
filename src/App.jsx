@@ -15,6 +15,7 @@ import About from "./components/NavbarSections/About";
 import Contact from "./components/NavbarSections/Contact";
 import Student from "./components/RegistrationForm/StudentForm.jsx";
 import Trainer from "./components/RegistrationForm/TrainerRegistrationForm.jsx";
+import Course from "./components/NavbarSections/ViewCourse.jsx";
 
 // Your landing page (same as before)
 function Home({ scale }) {
@@ -69,6 +70,7 @@ export default function App() {
         {/* Redirect any unknown URL to home */}
         <Route path="/student-registration" element={<Student/>} />
         <Route path="/trainer-registration" element={<Trainer/>} />
+        <Route path="/course" element={<Course/>} />
       </Routes>
     </BrowserRouter>
   );
