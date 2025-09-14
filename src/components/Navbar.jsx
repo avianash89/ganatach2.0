@@ -169,9 +169,9 @@ export default function Navbar() {
               </Link>
             </div>
             <Link to="/">
-            <span className="md:text-xl text-md font-logo font-medium text-white capitalize">
-              Gana Tech Solution
-            </span>
+              <span className="md:text-xl text-md font-logo font-medium text-white capitalize">
+                Gana Tech Solution
+              </span>
             </Link>
           </motion.div>
 
@@ -220,7 +220,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Toggle */}
-          <div className="md:hidden flex items-center justify-center cursor-pointer w-9 h-9">
+          <div className="md:hidden flex items-center justify-center cursor-pointer w-9 h-9 z-50 relative">
             {menuOpen ? (
               <IconX
                 stroke={1.5}
