@@ -25,44 +25,25 @@ export default function Navbar() {
   const link = [
     { name: "Home", link: "/" },
     {
-      name: "Class Room Training",
+      name: "Courses",
       dropdown: [
-        { name: "Data Science", link: "/classRoomTraining/dataScience" },
-        { name: "Artificial Intelligence", link: "/classRoomTraining/ai" },
-        { name: "Machine Learning", link: "/classRoomTraining/ml" },
+        { name: "Data Science", link: "/Courses/dataScience" },
+        { name: "Artificial Intelligence", link: "/Courses/ai" },
+        { name: "Machine Learning", link: "/Courses/ml" },
         {
           name: "AWS Solution Architect",
-          link: "/classRoomTraining/awsSolutionArchitect",
+          link: "/Courses/awsSolutionArchitect",
         },
-        { name: "DevOps", link: "/classRoomTraining/devops" },
+        { name: "DevOps", link: "/Courses/devops" },
         {
           name: "Azure Solution Architect",
-          link: "/classRoomTraining/azureSolutionArchitect",
+          link: "/Courses/azureSolutionArchitect",
         },
-        { name: "Linux Administration", link: "/classRoomTraining/linuxadmin" },
+        { name: "Linux Administration", link: "/Courses/linuxadmin" },
         {
           name: "Advance Python Programming",
-          link: "/classRoomTraining/python",
+          link: "/Courses/python",
         },
-      ],
-    },
-    {
-      name: "Online Training",
-      dropdown: [
-        { name: "Data Science", link: "/onlinetraining/dataScience" },
-        { name: "Artificial Intelligence", link: "/onlinetraining/ai" },
-        { name: "Machine Learning", link: "/onlinetraining/ml" },
-        {
-          name: "AWS Solution Architect",
-          link: "/onlinetraining/awsSolutionArchitect",
-        },
-        { name: "DevOps", link: "/onlinetraining/devops" },
-        {
-          name: "Azure Solution Architect",
-          link: "/onlinetraining/azureSolutionArchitect",
-        },
-        { name: "Linux Administration", link: "/onlinetraining/linuxadmin" },
-        { name: "Advance Python Programming", link: "/onlinetraining/python" },
       ],
     },
     { name: "Course Curriculum", link: "/course" },
@@ -142,11 +123,14 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="hidden md:flex items-center gap-4">
-            <Link
-              to="/student-registration"
-              className="hover:text-primary whitespace-nowrap">
-              Student Registration
-            </Link>
+            <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
+                    <IconUserCircle />
+                    <span className="text-sm font-semibold capitalize">
+                      <Link to="/login">
+                      Log in
+                      </Link>
+                    </span>
+                  </div>
             <Link
               to="/trainer-registration"
               className="hover:text-primary whitespace-nowrap">
@@ -285,15 +269,11 @@ export default function Navbar() {
                   <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
                     <IconUserCircle />
                     <span className="text-sm font-semibold capitalize">
+                      <Link to="/login">
                       Log in
+                      </Link>
                     </span>
                   </div>
-                  <Link
-                    to="/student-registration"
-                    onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary">
-                    Student Registration
-                  </Link>
                   <Link
                     to="/trainer-registration"
                     onClick={() => setMenuOpen(false)}

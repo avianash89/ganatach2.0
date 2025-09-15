@@ -1,4 +1,4 @@
-import resumePDF from "../../assets/Avinash.pdf";
+import resumePDF from "../../assets/AWS Soution Architect Associate Course Curriculum.pdf";
 
 export default function ResumeViewer() {
   const handleDownload = () => {
@@ -11,7 +11,7 @@ export default function ResumeViewer() {
   return (
     <div className="min-h-screen mt-25 flex flex-col items-center justify-center bg-bgprimary p-4">
       {/* Title */}
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-6 text-center text-white">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-6 text-center text-gray-400">
         Course Curriculum View and Download
       </h2>
 

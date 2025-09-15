@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function Contact() {
   return (
-    <div className="min-h-screen mt-30 bg-bgprimarypy-12 px-4 sm:px-6 lg:px-16">
+    <div className="min-h-screen mt-38 bg-bgprimarypy-12 px-4 sm:px-6 lg:px-16">
       {/* Title */}
-      <h1 className="text-3xl sm:text-4xl font-bold text-center text-white mb-10">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-400 mb-10">
         Contact Us
       </h1>
 
@@ -58,7 +58,7 @@ export default function Contact() {
       </div>
 
       {/* Enquiry */}
-      <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6 sm:p-10">
+      <div className="max-w-4xl mb-5 mx-auto bg-white shadow-md rounded-lg p-6 sm:p-10">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Enquiry</h2>
         <p className="text-gray-600">
           📞 Phone: <span className="font-medium">+91 8340 901 901</span>

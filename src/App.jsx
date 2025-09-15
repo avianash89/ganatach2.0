@@ -16,6 +16,8 @@ import Contact from "./components/NavbarSections/Contact";
 import Student from "./components/RegistrationForm/StudentForm.jsx";
 import Trainer from "./components/RegistrationForm/TrainerRegistrationForm.jsx";
 import Course from "./components/NavbarSections/ViewCourse.jsx";
+import Login from "./components/NavbarSections/Login.jsx";
+import { Toaster } from "react-hot-toast";
 
 // Your landing page (same as before)
 function Home({ scale }) {
@@ -71,7 +73,9 @@ export default function App() {
         <Route path="/student-registration" element={<Student/>} />
         <Route path="/trainer-registration" element={<Trainer/>} />
         <Route path="/course" element={<Course/>} />
+        <Route path="/login" element={<Login/>} />
       </Routes>
+      <Toaster position="top-center" reverseOrder={false} />
     </BrowserRouter>
   );
 }

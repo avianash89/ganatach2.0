@@ -5,7 +5,7 @@ export default function About() {
   return (
     <div className="min-h-screen mt-25 bg-bgprimary py-12 px-4 sm:px-6 lg:px-16">
       {/* Title */}
-      <h1 className="text-3xl sm:text-4xl font-bold text-center text-white mb-10">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-400 mb-10">
         About Us
       </h1>
 
