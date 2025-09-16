@@ -102,6 +102,7 @@ export default function TrainerRegistrationForm() {
                 onChange={handleChange}
                 className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
                            focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter 10-digit mobile"
               />
             </div>
 

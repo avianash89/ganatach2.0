@@ -3,7 +3,7 @@ import logo from "../assets/Logo.jpg";
 import { useState } from "react";
 import Button from "./Button";
 import {
-  IconMenu,
+  IconMenu2,
   IconUserCircle,
   IconX,
   IconPhone,
@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [coursesOpen, setCoursesOpen] = useState(false);
 
   const link = [
     { name: "Home", link: "/" },
@@ -46,7 +47,6 @@ export default function Navbar() {
         },
       ],
     },
-    { name: "Course Curriculum", link: "/course" },
     { name: "About", link: "/about" },
     { name: "Contact", link: "/contact" },
   ];
@@ -124,13 +124,11 @@ export default function Navbar() {
           {/* Right side */}
           <div className="hidden md:flex items-center gap-4">
             <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
-                    <IconUserCircle />
-                    <span className="text-sm font-semibold capitalize">
-                      <Link to="/login">
-                      Log in
-                      </Link>
-                    </span>
-                  </div>
+              <IconUserCircle />
+              <span className="text-sm font-semibold capitalize">
+                <Link to="/login">Log in</Link>
+              </span>
+            </div>
             <Link
               to="/trainer-registration"
               className="hover:text-primary whitespace-nowrap">
@@ -200,7 +198,7 @@ export default function Navbar() {
                 </Link>
               )
             )}
-            <Button text="Get started" className="hover:bg-primary" />
+            {/* <Button text="Get started" className="hover:bg-primary" /> */}
           </div>
 
           {/* Mobile Toggle */}
@@ -212,7 +210,7 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
               />
             ) : (
-              <IconMenu
+              <IconMenu2
                 stroke={1.5}
                 className="w-full h-full text-white"
                 onClick={() => setMenuOpen(true)}
@@ -231,15 +229,52 @@ export default function Navbar() {
               variants={menuVariants}
               className="absolute top-16 left-0 w-full h-screen bg-bgprimary px-6 py-10 md:hidden overflow-y-auto">
               <div className="flex flex-col gap-y-6 mb-8 text-white text-lg font-logo font-extralight">
-                {/* Menu Links */}
-                {link.map((item) =>
-                  item.dropdown ? (
-                    <div key={item.name}>
-                      <span className="font-semibold text-white">
-                        {item.name}
-                      </span>
-                      <div className="ml-4 mt-2 flex flex-col gap-y-2 max-h-40 overflow-y-auto">
-                        {item.dropdown.map((sub) => (
+                {/* Home */}
+                <motion.div variants={linkVariants}>
+                  <Link
+                    to="/"
+                    onClick={() => setMenuOpen(false)}
+                    className="hover:text-primary transition-colors duration-300">
+                    Home
+                  </Link>
+                </motion.div>
+
+                {/* Log in */}
+                <motion.div variants={linkVariants}>
+                  <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
+                    <IconUserCircle />
+                    <span className="text-sm font-semibold capitalize">
+                      <Link to="/login" onClick={() => setMenuOpen(false)}>
+                        Log in
+                      </Link>
+                    </span>
+                  </div>
+                </motion.div>
+
+                {/* Trainer Registration */}
+                <motion.div variants={linkVariants}>
+                  <Link
+                    to="/trainer-registration"
+                    onClick={() => setMenuOpen(false)}
+                    className="hover:text-primary transition-colors duration-300">
+                    Trainer Registration
+                  </Link>
+                </motion.div>
+
+                {/* Courses (toggleable) */}
+                <div>
+                  <span
+                    onClick={() => setCoursesOpen(!coursesOpen)}
+                    className="font-semibold text-white cursor-pointer flex justify-between items-center">
+                    Courses
+                    <span>{coursesOpen ? "▲" : "▼"}</span>
+                  </span>
+
+                  {coursesOpen && (
+                    <div className="ml-4 mt-2 flex flex-col gap-y-2 max-h-60 overflow-y-auto">
+                      {link
+                        .find((item) => item.name === "Courses")
+                        ?.dropdown.map((sub) => (
                           <Link
                             key={sub.name}
                             to={sub.link}
@@ -248,42 +283,32 @@ export default function Navbar() {
                             {sub.name}
                           </Link>
                         ))}
-                      </div>
                     </div>
-                  ) : (
-                    <motion.div key={item.name} variants={linkVariants}>
-                      <Link
-                        to={item.link}
-                        onClick={() => setMenuOpen(false)}
-                        className="hover:text-primary transition-colors duration-300">
-                        {item.name}
-                      </Link>
-                    </motion.div>
-                  )
-                )}
+                  )}
+                </div>
 
-                {/* Extra options */}
-                <motion.div
-                  variants={linkVariants}
-                  className="flex flex-col gap-y-6 w-full">
-                  <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
-                    <IconUserCircle />
-                    <span className="text-sm font-semibold capitalize">
-                      <Link to="/login">
-                      Log in
-                      </Link>
-                    </span>
-                  </div>
+                {/* About */}
+                <motion.div variants={linkVariants}>
                   <Link
-                    to="/trainer-registration"
+                    to="/about"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary">
-                    Trainer Registration
+                    className="hover:text-primary transition-colors duration-300">
+                    About
                   </Link>
-                  <Button
+                </motion.div>
+
+                {/* Contact */}
+                <motion.div variants={linkVariants}>
+                  <Link
+                    to="/contact"
+                    onClick={() => setMenuOpen(false)}
+                    className="hover:text-primary transition-colors duration-300">
+                    Contact
+                  </Link>
+                  {/* <Button
                     text="Get started"
                     className="bg-primary w-full text-black shadow-xl shadow-neutral-800"
-                  />
+                  /> */}
                 </motion.div>
               </div>
             </motion.div>
