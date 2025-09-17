@@ -2,6 +2,7 @@ import { Container } from "./Container";
 import logo from "../assets/Logo.jpg";
 import { useState } from "react";
 import Button from "./Button";
+ 
 import {
   IconMenu2,
   IconUserCircle,
@@ -76,7 +77,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="w-full top-0 left-0 z-50 fixed shadow-md">
+    <div className="w-full bg-bgprimary top-0 left-0 z-50 fixed shadow-md">
       <Container>
         {/* ✅ Top Bar */}
         <div className="bg-bgprimary text-white text-xs sm:text-sm px-4 py-2 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
