@@ -1,4 +1,5 @@
 import React from 'react';
+import FooterSection from '../sections/FooterSection';
 
 export default function Contact() {
   return (
@@ -73,6 +74,7 @@ export default function Contact() {
           </a>
         </p>
       </div>
+      <FooterSection/>
     </div>
   );
 }

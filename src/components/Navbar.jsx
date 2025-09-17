@@ -33,12 +33,12 @@ export default function Navbar() {
         { name: "Machine Learning", link: "/Courses/ml" },
         {
           name: "AWS Solution Architect",
-          link: "/Courses/awsSolutionArchitect",
+          link: "/Courses/aws",
         },
         { name: "DevOps", link: "/Courses/devops" },
         {
           name: "Azure Solution Architect",
-          link: "/Courses/azureSolutionArchitect",
+          link: "/Courses/azureSolution",
         },
         { name: "Linux Administration", link: "/Courses/linuxadmin" },
         {

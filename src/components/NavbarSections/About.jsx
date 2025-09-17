@@ -1,4 +1,6 @@
 import React from 'react';
+import FooterSection from '../sections/FooterSection';
+import { AHeroSection } from '../../components/index';
 
 
 export default function About() {
@@ -86,6 +88,8 @@ export default function About() {
           </li>
         </ul>
       </div>
+      <AHeroSection/>
+      <FooterSection/>
     </div>
   );
 }

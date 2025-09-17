@@ -18,6 +18,14 @@ import Trainer from "./components/RegistrationForm/TrainerRegistrationForm.jsx";
 import Course from "./components/NavbarSections/ViewCourse.jsx";
 import Login from "./components/NavbarSections/Login.jsx";
 import { Toaster } from "react-hot-toast";
+import DataScience from "./components/Course/DataScience.jsx";
+import ArtificialIntelligence from "./components/Course/ArtificialIntelligence.jsx";
+import MachineLearning from "./components/Course/MachineLearning.jsx";
+import Aws from "./components/Course/Aws.jsx";
+import DevOps from "./components/Course/DevOps.jsx";
+import AzureSolution from "./components/Course/AzureSolution.jsx";
+import LinuxAdmin from "./components/Course/LinuxAdmin.jsx";
+import AdvancePython from "./components/Course/AdvancePython.jsx";
 
 // Your landing page (same as before)
 function Home({ scale }) {
@@ -74,6 +82,14 @@ export default function App() {
         <Route path="/trainer-registration" element={<Trainer/>} />
         <Route path="/course" element={<Course/>} />
         <Route path="/login" element={<Login/>} />
+        <Route path="/Courses/dataScience" element={<DataScience/>} />
+        <Route path="/Courses/ai" element={<ArtificialIntelligence/>} />
+        <Route path="/Courses/ml" element={<MachineLearning/>} />
+        <Route path="/Courses/aws" element={<Aws/>} />
+        <Route path="/Courses/devops" element={<DevOps/>} />
+        <Route path="/Courses/azureSolution" element={<AzureSolution/>} />
+        <Route path="/Courses/linuxadmin" element={<LinuxAdmin/>} />
+        <Route path="/Courses/python" element={<AdvancePython/>} />
       </Routes>
       <Toaster position="top-center" reverseOrder={false} />
     </BrowserRouter>
