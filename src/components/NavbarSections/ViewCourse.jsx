@@ -1,10 +1,10 @@
-import resumePDF from "../../assets/AWS Soution Architect Associate Course Curriculum.pdf";
+import coursePDF from "../../assets/AWS Soution Architect Associate Course Curriculum.pdf";
 
-export default function ResumeViewer() {
+export default function ViewCourse() {
   const handleDownload = () => {
     const link = document.createElement("a");
-    link.href = resumePDF;
-    link.download = "Avinash_Resume.pdf";
+    link.href = coursePDF;
+    link.download = "AWS Soution Architect Associate Course Curriculum.pdf";
     link.click();
   };
 
@@ -18,8 +18,8 @@ export default function ResumeViewer() {
       {/* PDF Preview */}
       <div className="w-full max-w-4xl h-[400px] sm:h-[500px] md:h-[700px] bg-white shadow-lg border rounded-lg overflow-hidden">
         <iframe
-          src={resumePDF}
-          title="Avinash Resume"
+          src={coursePDF}
+          title="AWS Soution Architect Associate Course Curriculum"
           className="w-full h-full"
         />
       </div>
@@ -27,7 +27,7 @@ export default function ResumeViewer() {
       {/* Buttons */}
       <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-md justify-center">
         <a
-          href={resumePDF}
+          href={coursePDF}
           target="_blank"
           rel="noopener noreferrer"
           className="w-full sm:w-auto text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
