@@ -1,8 +1,7 @@
+// src/components/Navbar.jsx
 import { Container } from "./Container";
 import logo from "../assets/Logo.jpg";
 import { useState } from "react";
-import Button from "./Button";
- 
 import {
   IconMenu2,
   IconUserCircle,
@@ -11,18 +10,17 @@ import {
   IconMail,
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  FaInstagram,
-  FaFacebook,
-  FaYoutube,
-  FaXTwitter,
-} from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { FaInstagram, FaFacebook, FaYoutube, FaXTwitter, FaWhatsapp } from "react-icons/fa6";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx"; // ✅ AuthContext
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [coursesOpen, setCoursesOpen] = useState(false);
+
+  const { user, logout, loading } = useAuth(); // ✅ auth state
+  const navigate = useNavigate();
 
   const link = [
     { name: "Home", link: "/" },
@@ -32,20 +30,11 @@ export default function Navbar() {
         { name: "Data Science", link: "/Courses/dataScience" },
         { name: "Artificial Intelligence", link: "/Courses/ai" },
         { name: "Machine Learning", link: "/Courses/ml" },
-        {
-          name: "AWS Solution Architect",
-          link: "/Courses/aws",
-        },
+        { name: "AWS Solution Architect", link: "/Courses/aws" },
         { name: "DevOps", link: "/Courses/devops" },
-        {
-          name: "Azure Solution Architect",
-          link: "/Courses/azureSolution",
-        },
+        { name: "Azure Solution Architect", link: "/Courses/azureSolution" },
         { name: "Linux Administration", link: "/Courses/linuxadmin" },
-        {
-          name: "Advance Python Programming",
-          link: "/Courses/python",
-        },
+        { name: "Advance Python Programming", link: "/Courses/python" },
       ],
     },
     { name: "About", link: "/about" },
@@ -57,23 +46,19 @@ export default function Navbar() {
     show: {
       x: 0,
       opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-        when: "beforeChildren",
-        staggerChildren: 0.15,
-      },
+      transition: { duration: 0.5, ease: "easeOut", staggerChildren: 0.15 },
     },
-    exit: {
-      x: "100%",
-      opacity: 0,
-      transition: { duration: 0.3, ease: "easeIn" },
-    },
+    exit: { x: "100%", opacity: 0, transition: { duration: 0.3, ease: "easeIn" } },
   };
 
   const linkVariants = {
     hidden: { opacity: 0, x: 20 },
     show: { opacity: 1, x: 0, transition: { duration: 0.4, ease: "easeOut" } },
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/"); // ✅ logout ke baad home redirect
   };
 
   return (
@@ -84,39 +69,27 @@ export default function Navbar() {
           {/* Left side */}
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6">
             <div className="flex items-center gap-2">
-              <IconPhone size={16} /> <span>+91 56644484489</span>
+              <IconPhone size={16} /> <span>
+                <a href="tel:+918340901901">+91 8340901901</a>
+              </span>
             </div>
             <div className="flex items-center gap-2">
-              <IconMail size={16} /> <span>abcd@gmail.com</span>
+              <IconMail size={16} /> <span>
+                <a href="mailto:info@ganatech.co.in">info@ganatech.co.in</a>
+
+              </span>
             </div>
-            {/* Social Links */}
             <div className="flex items-center gap-3">
-              <a
-                href="https://www.instagram.com/ganatech901/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-pink-500">
+              <a href="https://www.instagram.com/ganatech901/" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500">
                 <FaInstagram />
               </a>
-              <a
-                href="https://www.facebook.com/ganatech.co.in"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-blue-600">
+              <a href="https://www.facebook.com/ganatech.co.in" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">
                 <FaFacebook />
               </a>
-              <a
-                href="https://www.youtube.com/channel/UC1T_OImlb4wBhbvcJ3-w_Hg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-red-600">
+              <a href="https://www.youtube.com/channel/UC1T_OImlb4wBhbvcJ3-w_Hg" target="_blank" rel="noopener noreferrer" className="hover:text-red-600">
                 <FaYoutube />
               </a>
-              <a
-                href="https://x.com/ganatech123"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-800">
+              <a href="https://x.com/ganatech123" target="_blank" rel="noopener noreferrer" className="hover:text-gray-800">
                 <FaXTwitter />
               </a>
             </div>
@@ -124,17 +97,33 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="hidden md:flex items-center gap-4">
-            <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
-              <IconUserCircle />
-              <span className="text-sm font-semibold capitalize">
-                <Link to="/login">Log in</Link>
+            {loading ? (
+              <span>Loading...</span>
+            ) : user ? (
+              <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
+                <IconUserCircle />
+              <span className="text-sm font-semibold capitalize"
+                onClick={handleLogout}
+              >
+                Logout
               </span>
-            </div>
-            <Link
-              to="/trainer-registration"
-              className="hover:text-primary whitespace-nowrap">
-              Trainer Registration
-            </Link>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
+                  <IconUserCircle />
+                  <span className="text-sm font-semibold capitalize">
+                    <Link to="/login">Log in</Link>
+                  </span>
+                </div>
+                <Link
+                  to="/trainer-registration"
+                  className="hover:text-primary whitespace-nowrap"
+                >
+                  Trainer Registration
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
@@ -144,11 +133,7 @@ export default function Navbar() {
           <motion.div className="flex justify-center items-center gap-x-2 cursor-pointer">
             <div className="md:w-10 md:h-10 my-2 overflow-hidden rounded-full h-8 w-8">
               <Link to="/">
-                <img
-                  src={logo}
-                  alt="Logo"
-                  className="h-full w-full object-cover cursor-pointer"
-                />
+                <img src={logo} alt="Logo" className="h-full w-full object-cover cursor-pointer" />
               </Link>
             </div>
             <Link to="/">
@@ -166,10 +151,9 @@ export default function Navbar() {
                   key={i}
                   className="relative"
                   onMouseEnter={() => setDropdownOpen(item.name)}
-                  onMouseLeave={() => setDropdownOpen(null)}>
-                  <span className="hover:text-primary cursor-pointer">
-                    {item.name}
-                  </span>
+                  onMouseLeave={() => setDropdownOpen(null)}
+                >
+                  <span className="hover:text-primary cursor-pointer">{item.name}</span>
                   <AnimatePresence>
                     {dropdownOpen === item.name && (
                       <motion.div
@@ -177,12 +161,14 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 bg-white text-black font-light rounded-lg shadow-lg w-48 max-h-60 overflow-y-auto">
+                        className="absolute top-full left-0 mt-2 bg-white text-black font-light rounded-lg shadow-lg w-48 max-h-60 overflow-y-auto"
+                      >
                         {item.dropdown.map((sub, idx) => (
                           <Link
                             key={idx}
                             to={sub.link}
-                            className="block px-4 py-2 hover:bg-gray-200">
+                            className="block px-4 py-2 hover:bg-gray-200"
+                          >
                             {sub.name}
                           </Link>
                         ))}
@@ -194,12 +180,12 @@ export default function Navbar() {
                 <Link
                   key={i}
                   to={item.link}
-                  className="hover:text-primary transition-colors duration-300 hover:cursor-pointer">
+                  className="hover:text-primary transition-colors duration-300 hover:cursor-pointer"
+                >
                   {item.name}
                 </Link>
               )
             )}
-            {/* <Button text="Get started" className="hover:bg-primary" /> */}
           </div>
 
           {/* Mobile Toggle */}
@@ -220,7 +206,7 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* ✅ Mobile Menu (scrollable) */}
+        {/* ✅ Mobile Menu */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
@@ -228,49 +214,62 @@ export default function Navbar() {
               animate="show"
               exit="exit"
               variants={menuVariants}
-              className="absolute top-16 left-0 w-full h-screen bg-bgprimary px-6 py-10 md:hidden overflow-y-auto">
+              className="absolute top-16 left-0 w-full h-screen bg-bgprimary px-6 py-10 md:hidden overflow-y-auto"
+            >
               <div className="flex flex-col gap-y-6 mb-8 text-white text-lg font-logo font-extralight">
-                {/* Home */}
                 <motion.div variants={linkVariants}>
                   <Link
                     to="/"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary transition-colors duration-300">
+                    className="hover:text-primary transition-colors duration-300"
+                  >
                     Home
                   </Link>
                 </motion.div>
 
-                {/* Log in */}
                 <motion.div variants={linkVariants}>
-                  <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
-                    <IconUserCircle />
-                    <span className="text-sm font-semibold capitalize">
-                      <Link to="/login" onClick={() => setMenuOpen(false)}>
-                        Log in
-                      </Link>
+                  {user ? (
+                    <span
+                      onClick={() => {
+                        handleLogout();
+                        setMenuOpen(false);
+                      }}
+                      className="cursor-pointer text-red-400 hover:text-red-600"
+                    >
+                      Logout
                     </span>
-                  </div>
+                  ) : (
+                    <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
+                      <IconUserCircle />
+                      <span className="text-sm font-semibold capitalize">
+                        <Link to="/login" onClick={() => setMenuOpen(false)}>
+                          Log in
+                        </Link>
+                      </span>
+                    </div>
+                  )}
                 </motion.div>
 
-                {/* Trainer Registration */}
-                <motion.div variants={linkVariants}>
-                  <Link
-                    to="/trainer-registration"
-                    onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary transition-colors duration-300">
-                    Trainer Registration
-                  </Link>
-                </motion.div>
+                {!user && (
+                  <motion.div variants={linkVariants}>
+                    <Link
+                      to="/trainer-registration"
+                      onClick={() => setMenuOpen(false)}
+                      className="hover:text-primary transition-colors duration-300"
+                    >
+                      Trainer Registration
+                    </Link>
+                  </motion.div>
+                )}
 
-                {/* Courses (toggleable) */}
                 <div>
                   <span
                     onClick={() => setCoursesOpen(!coursesOpen)}
-                    className="font-semibold text-white cursor-pointer flex justify-between items-center">
+                    className="font-semibold text-white cursor-pointer flex justify-between items-center"
+                  >
                     Courses
                     <span>{coursesOpen ? "▲" : "▼"}</span>
                   </span>
-
                   {coursesOpen && (
                     <div className="ml-4 mt-2 flex flex-col gap-y-2 max-h-60 overflow-y-auto">
                       {link
@@ -280,7 +279,8 @@ export default function Navbar() {
                             key={sub.name}
                             to={sub.link}
                             onClick={() => setMenuOpen(false)}
-                            className="text-sm hover:text-primary">
+                            className="text-sm hover:text-primary"
+                          >
                             {sub.name}
                           </Link>
                         ))}
@@ -288,33 +288,37 @@ export default function Navbar() {
                   )}
                 </div>
 
-                {/* About */}
                 <motion.div variants={linkVariants}>
                   <Link
                     to="/about"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary transition-colors duration-300">
+                    className="hover:text-primary transition-colors duration-300"
+                  >
                     About
                   </Link>
                 </motion.div>
 
-                {/* Contact */}
                 <motion.div variants={linkVariants}>
                   <Link
                     to="/contact"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary transition-colors duration-300">
+                    className="hover:text-primary transition-colors duration-300"
+                  >
                     Contact
                   </Link>
-                  {/* <Button
-                    text="Get started"
-                    className="bg-primary w-full text-black shadow-xl shadow-neutral-800"
-                  /> */}
                 </motion.div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
+        <a
+                href="https://wa.me/918340901901" // replace with your WhatsApp number
+                target="_blank"
+                rel="noopener noreferrer"
+                className="fixed bottom-6 right-6 bg-black text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition z-50"
+              >
+                <FaWhatsapp size={28} />
+              </a>
       </Container>
     </div>
   );

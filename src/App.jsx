@@ -10,7 +10,7 @@ import heroBg from "./assets/heroBg.avif";
 import Achievement from "./components/sections/Achievement";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import About from "./components/NavbarSections/About";
 import Contact from "./components/NavbarSections/Contact";
 import Student from "./components/RegistrationForm/StudentForm.jsx";
@@ -26,8 +26,9 @@ import DevOps from "./components/Course/DevOps.jsx";
 import AzureSolution from "./components/Course/AzureSolution.jsx";
 import LinuxAdmin from "./components/Course/LinuxAdmin.jsx";
 import AdvancePython from "./components/Course/AdvancePython.jsx";
+import { AuthProvider } from "../src/context/AuthContext.jsx";
 
-// Your landing page (same as before)
+// Home component
 function Home({ scale }) {
   return (
     <div className="w-full overflow-x-hidden relative font-global">
@@ -38,7 +39,6 @@ function Home({ scale }) {
         src={heroBg}
         alt="Hero Background"
       />
-
       <Navbar />
       <HeroSection />
       <AHeroSection />
@@ -50,48 +50,47 @@ function Home({ scale }) {
   );
 }
 
-export default function App() {
+function App() {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
+    const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
-    // Always scroll to top on reload/refresh
     window.history.scrollRestoration = "manual";
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, []);
 
-  // Scale background on scroll
   const scale = 1 + (scrollY / window.innerHeight) * 0.1;
 
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home scale={scale} />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        {/* Redirect any unknown URL to home */}
-        <Route path="/student-registration" element={<Student/>} />
-        <Route path="/trainer-registration" element={<Trainer/>} />
-        <Route path="/course" element={<Course/>} />
-        <Route path="/login" element={<Login/>} />
-        <Route path="/Courses/dataScience" element={<DataScience/>} />
-        <Route path="/Courses/ai" element={<ArtificialIntelligence/>} />
-        <Route path="/Courses/ml" element={<MachineLearning/>} />
-        <Route path="/Courses/aws" element={<Aws/>} />
-        <Route path="/Courses/devops" element={<DevOps/>} />
-        <Route path="/Courses/azureSolution" element={<AzureSolution/>} />
-        <Route path="/Courses/linuxadmin" element={<LinuxAdmin/>} />
-        <Route path="/Courses/python" element={<AdvancePython/>} />
-      </Routes>
-      <Toaster position="top-center" reverseOrder={false} />
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home scale={scale} />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/student-registration" element={<Student />} />
+          <Route path="/trainer-registration" element={<Trainer />} />
+          <Route path="/course" element={<Course />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/Courses/dataScience" element={<DataScience />} />
+          <Route path="/Courses/ai" element={<ArtificialIntelligence />} />
+          <Route path="/Courses/ml" element={<MachineLearning />} />
+          <Route path="/Courses/aws" element={<Aws />} />
+          <Route path="/Courses/devops" element={<DevOps />} />
+          <Route path="/Courses/azureSolution" element={<AzureSolution />} />
+          <Route path="/Courses/linuxadmin" element={<LinuxAdmin />} />
+          <Route path="/Courses/python" element={<AdvancePython />} />
+        </Routes>
+        <Toaster position="top-center" reverseOrder={false} />
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
+
+export default App;

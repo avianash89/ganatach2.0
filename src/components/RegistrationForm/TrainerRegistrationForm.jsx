@@ -12,14 +12,14 @@ export default function TrainerRegistrationForm() {
   });
 
   const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState("");
   const [enteredOtp, setEnteredOtp] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  // ✅ Send OTP via backend
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!/^\d{10}$/.test(formData.phoneNumber)) {
@@ -27,40 +27,64 @@ export default function TrainerRegistrationForm() {
       return;
     }
 
-    // Generate OTP
-    const generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-    setOtp(generatedOtp);
-    setOtpSent(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/trainers/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    console.log("OTP Sent:", generatedOtp);
-    toast.success(`OTP sent to ${formData.phoneNumber}`);
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success(data.message);
+        setOtpSent(true);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (err) {
+      toast.error("Server Error. Please try again later.");
+      console.error(err);
+    }
   };
 
-  const handleOtpValidation = () => {
-    if (enteredOtp === otp) {
-      toast.success("✅ OTP Verified! Trainer Registration Completed.");
-      console.log("Trainer Data:", formData);
-
-      // Reset after successful verification
-      setFormData({
-        trainerName: "",
-        phoneNumber: "",
-        email: "",
-        technology: "",
-        experience: "",
+  // ✅ Verify OTP via backend
+  const handleOtpValidation = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/trainers/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phoneNumber: formData.phoneNumber,
+          enteredOtp,
+        }),
       });
-      setOtp("");
-      setEnteredOtp("");
-      setOtpSent(false);
-    } else {
-      toast.error("❌ Invalid OTP, please try again.");
+
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success("✅ OTP Verified! Trainer Registered.");
+        setOtpSent(false);
+        setEnteredOtp("");
+        setFormData({
+          trainerName: "",
+          phoneNumber: "",
+          email: "",
+          technology: "",
+          experience: "",
+        });
+      } else {
+        toast.error(data.message);
+      }
+    } catch (err) {
+      toast.error("Server Error. Please try again later.");
+      console.error(err);
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-[2px] px-4 sm:px-6">
       <div className="w-full max-w-lg relative bg-white shadow-lg rounded-lg p-6 sm:p-8">
-        {/* Close Button */}
         <Link
           to="/"
           className="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-xl font-bold"
@@ -68,7 +92,6 @@ export default function TrainerRegistrationForm() {
           ❌
         </Link>
 
-        {/* Title */}
         <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6 border-b pb-2 text-gray-800">
           Trainer Registration
         </h2>
@@ -85,8 +108,7 @@ export default function TrainerRegistrationForm() {
                 required
                 value={formData.trainerName}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -100,8 +122,7 @@ export default function TrainerRegistrationForm() {
                 required
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter 10-digit mobile"
               />
             </div>
@@ -116,8 +137,7 @@ export default function TrainerRegistrationForm() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -131,8 +151,7 @@ export default function TrainerRegistrationForm() {
                 required
                 value={formData.technology}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -146,15 +165,13 @@ export default function TrainerRegistrationForm() {
                 required
                 value={formData.experience}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-green-600 text-white font-medium py-2 sm:py-3 px-4 
-                         rounded-md hover:bg-green-700 transition"
+              className="w-full bg-green-600 text-white font-medium py-2 sm:py-3 px-4 rounded-md hover:bg-green-700 transition"
             >
               Send OTP
             </button>
@@ -172,15 +189,13 @@ export default function TrainerRegistrationForm() {
                 maxLength="4"
                 value={enteredOtp}
                 onChange={(e) => setEnteredOtp(e.target.value)}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500 text-center tracking-widest"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center tracking-widest"
               />
             </div>
 
             <button
               onClick={handleOtpValidation}
-              className="w-full bg-blue-600 text-white font-medium py-2 sm:py-3 px-4 
-                         rounded-md hover:bg-blue-700 transition"
+              className="w-full bg-blue-600 text-white font-medium py-2 sm:py-3 px-4 rounded-md hover:bg-blue-700 transition"
             >
               Validate OTP
             </button>
