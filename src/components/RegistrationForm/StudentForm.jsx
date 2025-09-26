@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // ✅ useNavigate added
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext.jsx";
 import axios from "axios";
 
 export default function StudentForm() {
-  const { loginWithOtp } = useAuth(); // Updated context method
+  const { loginWithOtp } = useAuth(); 
+  const navigate = useNavigate(); // ✅ hook for navigation
+
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
@@ -62,11 +64,15 @@ export default function StudentForm() {
 
     setLoading(true);
     try {
-      // Login using context method
       await loginWithOtp("student", formData.mobile, enteredOtp);
       toast.success("✅ OTP Verified! Student Enquiry Submitted.");
-      // Redirect to homepage
-      window.location.href = "/";
+
+      // ✅ Close the form after success
+      setTimeout(() => {
+        navigate("/"); // redirect to homepage
+      }, 1000);
+
+      // Reset form states
       setOtpSent(false);
       setEnteredOtp("");
       setFormData({ name: "", mobile: "", course: "", email: "", message: "" });

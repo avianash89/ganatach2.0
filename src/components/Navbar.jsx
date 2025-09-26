@@ -116,19 +116,17 @@ export default function Navbar() {
               </a>
             </div>
           </div>
-
           {/* Right Side */}
           <div className="hidden md:flex items-center gap-4">
             {loading ? (
-              <span>Loading...</span>
-            ) : user || student ? ( // ✅ Show logout if either is logged in
-              <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
+              // Show nothing or a spinner while checking auth
+              <span className="text-white">Loading...</span>
+            ) : user || student ? (
+              <div
+                className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer"
+                onClick={handleLogout}>
                 <IconUserCircle />
-                <span
-                  className="text-sm font-semibold capitalize"
-                  onClick={handleLogout}>
-                  Logout
-                </span>
+                <span className="text-sm font-semibold capitalize">Logout</span>
               </div>
             ) : (
               <>
