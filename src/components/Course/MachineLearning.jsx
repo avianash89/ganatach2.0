@@ -1,6 +1,7 @@
 import React from "react";
 import pdfFile from "../../assets/aws_solution_architect.pdf";
 
+
 export default function MachineLearning() {
   return (
     <div className="bg-gray-50 mt-30 text-gray-800 relative">
