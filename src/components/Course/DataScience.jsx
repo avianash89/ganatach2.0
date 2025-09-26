@@ -1,12 +1,20 @@
 import React from "react";
-import { FaWhatsapp } from "react-icons/fa"; 
+import pdfFile from "../../assets/aws_solution_architect.pdf";
 
 export default function DataScience() {
   return (
-    <div className="bg-gray-50 mt-30 text-gray-800">
+    <div className="bg-gray-50 mt-30 text-gray-800 relative">
+      {/* PDF Download Button (Top Right) */}
+      <a
+        href={pdfFile}
+        download="DataScience_Course.pdf"
+        className="absolute top-8 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition">
+        📄 Course PDF
+      </a>
+
       {/* Hero Section */}
-      <section className="bg-gradient-to-r  from-blue-900 to-blue-600 text-white py-16 px-6 text-center">
-        <h1 className="text-3xl md:text-5xl font-bold mb-4">
+      <section className="bg-gradient-to-r from-blue-900 to-blue-600 text-white py-16 px-6 text-center">
+        <h1 className="text-3xl mt-2 md:text-5xl font-bold mb-4">
           Data Science Training in Ameerpet
         </h1>
         <p className="max-w-3xl mx-auto text-lg">
@@ -26,18 +34,14 @@ export default function DataScience() {
         </h2>
         <div className="grid md:grid-cols-3 gap-8 text-center">
           <div className="bg-white shadow-lg p-6 rounded-xl hover:shadow-2xl transition">
-            <h3 className="font-semibold text-lg mb-3">
-              Real-Time Projects
-            </h3>
+            <h3 className="font-semibold text-lg mb-3">Real-Time Projects</h3>
             <p>
               Work on industry-level projects and case studies to gain practical
               experience.
             </p>
           </div>
           <div className="bg-white shadow-lg p-6 rounded-xl hover:shadow-2xl transition">
-            <h3 className="font-semibold text-lg mb-3">
-              Flexible Timings
-            </h3>
+            <h3 className="font-semibold text-lg mb-3">Flexible Timings</h3>
             <p>
               Weekend and weekday batches for working professionals & students.
             </p>
@@ -46,9 +50,7 @@ export default function DataScience() {
             <h3 className="font-semibold text-lg mb-3">
               100% Placement Assistance
             </h3>
-            <p>
-              Dedicated placement support to help you get into top MNCs.
-            </p>
+            <p>Dedicated placement support to help you get into top MNCs.</p>
           </div>
         </div>
       </section>
@@ -60,7 +62,9 @@ export default function DataScience() {
         </h2>
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
           <div className="bg-white p-6 rounded-lg shadow hover:shadow-xl transition">
-            <h3 className="font-semibold text-xl mb-3">Module 1: Python Basics</h3>
+            <h3 className="font-semibold text-xl mb-3">
+              Module 1: Python Basics
+            </h3>
             <ul className="list-disc list-inside text-gray-700">
               <li>Data Types, Lists, Dictionaries, Tuples</li>
               <li>Loops & Functions</li>
@@ -121,15 +125,6 @@ export default function DataScience() {
           Register Now
         </button>
       </section>
-      {/* WhatsApp Floating Button */}
-      <a
-        href="https://wa.me/918340901901" // replace with your WhatsApp number
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition z-50"
-      >
-        <FaWhatsapp size={28} />
-      </a>
     </div>
   );
 }

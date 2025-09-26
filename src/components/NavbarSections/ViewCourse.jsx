@@ -1,4 +1,4 @@
-import coursePDF from "../../assets/AWS Soution Architect Associate Course Curriculum.pdf";
+import pdfFile from "../../assets/aws_solution_architect.pdf";
 
 export default function ViewCourse() {
   const handleDownload = () => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { FaWhatsapp } from "react-icons/fa";
+import pdfFile from "../../assets/aws_solution_architect.pdf";
 
 export default function DevOps() {
   const modules = [
@@ -220,8 +220,7 @@ export default function DevOps() {
     },
     {
       title: "Module 10: Infrastructure as Code with Terraform",
-      objective:
-        "Automate cloud infrastructure using Terraform IaC.",
+      objective: "Automate cloud infrastructure using Terraform IaC.",
       topics: [
         "What is IaC? Terraform vs other IaC tools",
         "Terraform architecture",
@@ -243,10 +242,18 @@ export default function DevOps() {
   ];
 
   return (
-    <div className="bg-gray-50 mt-30 text-gray-800">
+    <div className="bg-gray-50 mt-30 text-gray-800 relative">
+      {/* PDF Download Button (Top Right) */}
+      <a
+        href={pdfFile}
+        download="DevOps.pdf"
+        className="absolute top-8 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition">
+        📄 Course PDF
+      </a>
+
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-700 to-indigo-500 text-white py-16 px-6 text-center">
-        <h1 className="text-3xl md:text-5xl font-bold mb-4">
+        <h1 className="text-3xl mt-2 md:text-5xl font-bold mb-4">
           DevOps Training in Hyderabad
         </h1>
         <p className="max-w-3xl mx-auto text-lg">
@@ -268,8 +275,7 @@ export default function DevOps() {
           {modules.map((mod, i) => (
             <div
               key={i}
-              className="bg-white p-6 rounded-lg shadow hover:shadow-xl transition"
-            >
+              className="bg-white p-6 rounded-lg shadow hover:shadow-xl transition">
               <h3 className="font-semibold text-xl mb-3">{mod.title}</h3>
               <p className="mb-3 text-gray-700">
                 <span className="font-semibold">Objective:</span>{" "}
@@ -306,23 +312,18 @@ export default function DevOps() {
 
       {/* Call to Action */}
       <section className="py-16 px-6 text-center">
-        <h2 className="text-3xl font-bold mb-4">Kickstart Your DevOps Career!</h2>
+        <h2 className="text-3xl font-bold mb-4">
+          Kickstart Your DevOps Career!
+        </h2>
         <p className="mb-6 text-lg">
-          Enroll in Ganatech’s DevOps Training in Hyderabad to master automation,
-          Kubernetes, Terraform, CI/CD, and cloud deployment with placement support.
+          Enroll in Ganatech’s DevOps Training in Hyderabad to master
+          automation, Kubernetes, Terraform, CI/CD, and cloud deployment with
+          placement support.
         </p>
         <button className="bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 transition">
           Register Now
         </button>
       </section>
-      <a
-        href="https://wa.me/918340901901" // replace with your WhatsApp number
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition z-50"
-      >
-        <FaWhatsapp size={28} />
-      </a>
     </div>
   );
 }

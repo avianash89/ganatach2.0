@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 export default function Login() {
-  const { loginWithOtp } = useAuth();
+  const { loginWithOtp } = useAuth(); // ✅ AuthContext login function
   const [mobile, setMobile] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [enteredOtp, setEnteredOtp] = useState("");
@@ -49,16 +49,16 @@ export default function Login() {
     }
 
     try {
-      await loginWithOtp(mobile, enteredOtp);
-      window.location.href = "/"; // Redirect to homepage on success
+      await loginWithOtp("user", mobile, enteredOtp); // specify role
       toast.success("✅ Login Successful!");
+      window.location.href = "/"; // Redirect to homepage
 
       // Reset form
       setMobile("");
       setEnteredOtp("");
       setOtpSent(false);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Invalid OTP");
+      toast.error(err.response?.data?.message || err.message || "Invalid OTP");
       console.error(err);
     }
   };
@@ -66,7 +66,6 @@ export default function Login() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
       <div className="relative w-full max-w-md bg-white rounded-lg shadow-lg p-6">
-        {/* Close Button */}
         <Link
           to="/"
           className="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-xl font-bold"
@@ -74,18 +73,14 @@ export default function Login() {
           ❌
         </Link>
 
-        {/* Title */}
         <h2 className="text-2xl font-semibold text-center mb-6">
           Login with OTP
         </h2>
 
         {!otpSent ? (
-          // Step 1: Enter Mobile Number
           <form onSubmit={handleSendOtp} className="space-y-4">
             <div>
-              <label className="block font-medium text-gray-700">
-                Mobile Number
-              </label>
+              <label className="block font-medium text-gray-700">Mobile Number</label>
               <input
                 type="tel"
                 value={mobile}
@@ -104,7 +99,6 @@ export default function Login() {
             </button>
           </form>
         ) : (
-          // Step 2: Validate OTP
           <form onSubmit={handleValidateOtp} className="space-y-4">
             <p className="text-center text-gray-700">
               OTP sent to <strong>{mobile}</strong>
@@ -128,7 +122,6 @@ export default function Login() {
           </form>
         )}
 
-        {/* Signup link */}
         <div className="mt-4 text-center">
           <Link to="/student-registration" className="text-blue-600 hover:underline">
             New user? Signup

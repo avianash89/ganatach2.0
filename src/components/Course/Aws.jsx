@@ -1,5 +1,5 @@
 import React from "react";
-import { FaWhatsapp } from "react-icons/fa";
+import pdfFile from "../../assets/aws_solution_architect.pdf";
 
 export default function AwsSolutionArchitect() {
   const modules = [
@@ -72,10 +72,18 @@ export default function AwsSolutionArchitect() {
   ];
 
   return (
-    <div className="bg-gray-50 mt-30 text-gray-800">
+    <div className="bg-gray-50 mt-30 text-gray-800 relative">
+      {/* PDF Download Button (Top Right) */}
+      <a
+        href={pdfFile}
+        download="Aws_Course.pdf"
+        className="absolute top-8 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition">
+        📄 Course PDF
+      </a>
+
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-orange-600 to-yellow-500 text-white py-16 px-6 text-center">
-        <h1 className="text-3xl md:text-5xl font-bold mb-4">
+        <h1 className="text-3xl mt-2 md:text-5xl font-bold mb-4">
           AWS Solution Architect Training in Hyderabad
         </h1>
         <p className="max-w-3xl mx-auto text-lg">
@@ -97,11 +105,11 @@ export default function AwsSolutionArchitect() {
           {modules.map((mod, i) => (
             <div
               key={i}
-              className="bg-white p-6 rounded-lg shadow hover:shadow-xl transition"
-            >
+              className="bg-white p-6 rounded-lg shadow hover:shadow-xl transition">
               <h3 className="font-semibold text-xl mb-3">{mod.title}</h3>
               <p className="mb-3 text-gray-700">
-                <span className="font-semibold">Objective:</span> {mod.objective}
+                <span className="font-semibold">Objective:</span>{" "}
+                {mod.objective}
               </p>
               <p className="font-semibold">Topics:</p>
               <ul className="list-disc list-inside text-gray-700 mb-3">
@@ -148,14 +156,6 @@ export default function AwsSolutionArchitect() {
           Register Now
         </button>
       </section>
-      <a
-        href="https://wa.me/918340901901" // replace with your WhatsApp number
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition z-50"
-      >
-        <FaWhatsapp size={28} />
-      </a>
     </div>
   );
 }

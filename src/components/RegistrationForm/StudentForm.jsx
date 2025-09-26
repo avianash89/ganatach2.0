@@ -1,8 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext.jsx";
+import axios from "axios";
 
 export default function StudentForm() {
+  const { loginWithOtp } = useAuth(); // Updated context method
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
@@ -10,75 +13,68 @@ export default function StudentForm() {
     email: "",
     message: "",
   });
-
   const [otpSent, setOtpSent] = useState(false);
   const [enteredOtp, setEnteredOtp] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Send OTP via backend
-  const handleSubmit = async (e) => {
+  // Send OTP
+  const handleSendOtp = async (e) => {
     e.preventDefault();
-
     if (!/^\d{10}$/.test(formData.mobile)) {
       toast.error("Please enter a valid 10-digit mobile number!");
       return;
     }
 
+    setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/students/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const res = await axios.post(
+        "http://localhost:5000/api/students/send-otp",
+        formData,
+        { withCredentials: true }
+      );
 
-      const data = await res.json();
-
-      if (data.success) {
-        toast.success(data.message);
+      if (res.data.success) {
+        toast.success(res.data.message);
         setOtpSent(true);
       } else {
-        toast.error(data.message);
+        toast.error(res.data.message || "Failed to send OTP");
       }
     } catch (err) {
-      toast.error("Server Error. Please try again later.");
-      console.error(err);
+      console.error("Send OTP error:", err);
+      toast.error("Server error while sending OTP");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ✅ Verify OTP via backend
-  const handleOtpValidation = async () => {
+  // Verify OTP and login
+  const handleOtpValidation = async (e) => {
+    e.preventDefault();
+    if (!enteredOtp) {
+      toast.error("Enter OTP!");
+      return;
+    }
+
+    setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/students/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mobile: formData.mobile,
-          enteredOtp,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        toast.success("✅ OTP Verified! Student Enquiry Submitted.");
-        setOtpSent(false);
-        setEnteredOtp("");
-        setFormData({
-          name: "",
-          mobile: "",
-          course: "",
-          email: "",
-          message: "",
-        });
-      } else {
-        toast.error(data.message);
-      }
+      // Login using context method
+      await loginWithOtp("student", formData.mobile, enteredOtp);
+      toast.success("✅ OTP Verified! Student Enquiry Submitted.");
+      // Redirect to homepage
+      window.location.href = "/";
+      setOtpSent(false);
+      setEnteredOtp("");
+      setFormData({ name: "", mobile: "", course: "", email: "", message: "" });
     } catch (err) {
-      toast.error("Server Error. Please try again later.");
-      console.error(err);
+      console.error("Verify OTP error:", err);
+      toast.error(err.response?.data?.message || "Invalid or expired OTP");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,50 +93,41 @@ export default function StudentForm() {
         </h2>
 
         {!otpSent ? (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSendOtp} className="space-y-4">
             <div>
-              <label className="block font-medium">
-                Name <span className="text-red-500">*</span>
-              </label>
+              <label className="block font-medium">Name *</label>
               <input
                 type="text"
                 name="name"
-                required
                 value={formData.name}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block font-medium">
-                Mobile <span className="text-red-500">*</span>
-              </label>
+              <label className="block font-medium">Mobile *</label>
               <input
                 type="tel"
                 name="mobile"
-                required
                 value={formData.mobile}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
                 placeholder="Enter 10-digit mobile"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block font-medium">
-                Which Course? <span className="text-red-500">*</span>
-              </label>
+              <label className="block font-medium">Course *</label>
               <input
                 type="text"
                 name="course"
-                required
                 value={formData.course}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -151,8 +138,7 @@ export default function StudentForm() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -163,41 +149,41 @@ export default function StudentForm() {
                 rows="3"
                 value={formData.message}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-green-600 text-white font-medium py-2 sm:py-3 px-4 
-                         rounded-md hover:bg-green-700 transition"
+              disabled={loading}
+              className="w-full bg-green-600 text-white font-medium py-2 sm:py-3 px-4 rounded-md hover:bg-green-700 transition disabled:opacity-50"
             >
-              Send OTP
+              {loading ? "Sending OTP..." : "Send OTP"}
             </button>
           </form>
         ) : (
-          <div className="space-y-4">
+          <form onSubmit={handleOtpValidation} className="space-y-4">
             <p className="text-center text-gray-700">
               OTP sent to <strong>{formData.mobile}</strong>
             </p>
+
             <input
               type="text"
               maxLength="4"
-              placeholder="Enter OTP"
               value={enteredOtp}
               onChange={(e) => setEnteredOtp(e.target.value)}
-              className="mt-1 w-full border border-gray-300 rounded-md p-3 
-                         text-center tracking-widest text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter OTP"
+              className="mt-1 w-full border border-gray-300 rounded-md p-3 text-center tracking-widest text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+
             <button
-              onClick={handleOtpValidation}
-              className="w-full bg-blue-600 text-white font-medium py-2 sm:py-3 px-4 
-                         rounded-md hover:bg-blue-700 transition"
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 text-white font-medium py-2 sm:py-3 px-4 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
             >
-              Validate OTP
+              {loading ? "Verifying OTP..." : "Validate OTP & Submit"}
             </button>
-          </div>
+          </form>
         )}
       </div>
     </div>
