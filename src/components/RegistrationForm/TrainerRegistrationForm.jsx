@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
 
 export default function TrainerRegistrationForm() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,9 @@ export default function TrainerRegistrationForm() {
 
   const [otpSent, setOtpSent] = useState(false);
   const [enteredOtp, setEnteredOtp] = useState("");
+
+  const { loginTrainerWithOtp } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -48,33 +52,16 @@ export default function TrainerRegistrationForm() {
     }
   };
 
-  // ✅ Verify OTP via backend
+  // ✅ Verify OTP and login
   const handleOtpValidation = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/trainers/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phoneNumber: formData.phoneNumber,
-          enteredOtp,
-        }),
-      });
+      const trainer = await loginTrainerWithOtp(formData.phoneNumber, enteredOtp);
 
-      const data = await res.json();
-
-      if (data.success) {
-        toast.success("✅ OTP Verified! Trainer Registered.");
-        setOtpSent(false);
-        setEnteredOtp("");
-        setFormData({
-          trainerName: "",
-          phoneNumber: "",
-          email: "",
-          technology: "",
-          experience: "",
-        });
+      if (trainer) {
+        toast.success("✅ OTP Verified! Trainer Logged in.");
+        navigate("/trainer"); // redirect to trainer dashboard
       } else {
-        toast.error(data.message);
+        toast.error("Invalid OTP");
       }
     } catch (err) {
       toast.error("Server Error. Please try again later.");
@@ -108,7 +95,8 @@ export default function TrainerRegistrationForm() {
                 required
                 value={formData.trainerName}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -122,7 +110,8 @@ export default function TrainerRegistrationForm() {
                 required
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter 10-digit mobile"
               />
             </div>
@@ -137,7 +126,8 @@ export default function TrainerRegistrationForm() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -151,7 +141,8 @@ export default function TrainerRegistrationForm() {
                 required
                 value={formData.technology}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -165,13 +156,15 @@ export default function TrainerRegistrationForm() {
                 required
                 value={formData.experience}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-green-600 text-white font-medium py-2 sm:py-3 px-4 rounded-md hover:bg-green-700 transition"
+              className="w-full bg-green-600 text-white font-medium py-2 sm:py-3 px-4 
+                rounded-md hover:bg-green-700 transition"
             >
               Send OTP
             </button>
@@ -179,7 +172,8 @@ export default function TrainerRegistrationForm() {
         ) : (
           <div className="space-y-4">
             <p className="text-gray-700 text-center">
-              OTP has been sent to <span className="font-semibold">{formData.phoneNumber}</span>
+              OTP has been sent to{" "}
+              <span className="font-semibold">{formData.phoneNumber}</span>
             </p>
 
             <div>
@@ -189,13 +183,16 @@ export default function TrainerRegistrationForm() {
                 maxLength="4"
                 value={enteredOtp}
                 onChange={(e) => setEnteredOtp(e.target.value)}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center tracking-widest"
+                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 
+                  text-center tracking-widest"
               />
             </div>
 
             <button
               onClick={handleOtpValidation}
-              className="w-full bg-blue-600 text-white font-medium py-2 sm:py-3 px-4 rounded-md hover:bg-blue-700 transition"
+              className="w-full bg-blue-600 text-white font-medium py-2 sm:py-3 px-4 
+                rounded-md hover:bg-blue-700 transition"
             >
               Validate OTP
             </button>

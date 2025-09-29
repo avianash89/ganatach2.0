@@ -1,3 +1,4 @@
+// src/context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
@@ -6,6 +7,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [student, setStudent] = useState(null);
+  const [trainer, setTrainer] = useState(null); // ✅ trainer
   const [loading, setLoading] = useState(true);
 
   // ✅ Check login on refresh
@@ -15,8 +17,7 @@ export function AuthProvider({ children }) {
         const studentRes = await axios.get("http://localhost:5000/api/students/check-auth", {
           withCredentials: true,
         });
-        if (studentRes.data.student) setStudent(studentRes.data.student);
-        else setStudent(null);
+        setStudent(studentRes.data.student || null);
       } catch {
         setStudent(null);
       }
@@ -25,18 +26,27 @@ export function AuthProvider({ children }) {
         const userRes = await axios.get("http://localhost:5000/api/auth/check", {
           withCredentials: true,
         });
-        if (userRes.data.user) setUser(userRes.data.user);
-        else setUser(null);
+        setUser(userRes.data.user || null);
       } catch {
         setUser(null);
-      } finally {
-        setLoading(false); // ✅ Only set loading false after both checks
       }
+
+      try {
+        const trainerRes = await axios.get("http://localhost:5000/api/trainers/check-auth", {
+          withCredentials: true,
+        });
+        setTrainer(trainerRes.data.trainer || null);
+      } catch {
+        setTrainer(null);
+      }
+
+      setLoading(false);
     };
 
     checkAuth();
   }, []);
 
+  // ✅ Student/User OTP login
   const loginWithOtp = async (role, mobile, otp) => {
     const endpoint =
       role === "student"
@@ -54,23 +64,61 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = async () => {
+  // ✅ Trainer OTP login
+  const loginTrainerWithOtp = async (phoneNumber, enteredOtp) => {
+    const res = await axios.post(
+      "http://localhost:5000/api/trainers/verify-otp",
+      { phoneNumber, enteredOtp },
+      { withCredentials: true }
+    );
+    setTrainer(res.data.trainer);
+    setUser(null);
+    setStudent(null);
+    return res.data.trainer;
+  };
+
+  // ✅ Logout functions
+  const logoutUser = async () => {
     try {
-      if (student) {
-        await axios.post("http://localhost:5000/api/students/logout", {}, { withCredentials: true });
-        setStudent(null);
-      }
-      if (user) {
-        await axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true });
-        setUser(null);
-      }
+      await axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true });
+      setUser(null);
     } catch (err) {
-      console.error("Logout failed:", err);
+      console.error("User logout failed:", err);
+    }
+  };
+
+  const logoutStudent = async () => {
+    try {
+      await axios.post("http://localhost:5000/api/students/logout", {}, { withCredentials: true });
+      setStudent(null);
+    } catch (err) {
+      console.error("Student logout failed:", err);
+    }
+  };
+
+  const logoutTrainer = async () => {
+    try {
+      await axios.post("http://localhost:5000/api/trainers/logout", {}, { withCredentials: true });
+      setTrainer(null);
+    } catch (err) {
+      console.error("Trainer logout failed:", err);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, student, loginWithOtp, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        student,
+        trainer,
+        loginWithOtp,
+        loginTrainerWithOtp,
+        logoutUser,
+        logoutStudent,
+        logoutTrainer,
+        loading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

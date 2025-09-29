@@ -27,6 +27,7 @@ import AzureSolution from "./components/Course/AzureSolution.jsx";
 import LinuxAdmin from "./components/Course/LinuxAdmin.jsx";
 import AdvancePython from "./components/Course/AdvancePython.jsx";
 import { AuthProvider } from "../src/context/AuthContext.jsx";
+import TrainerPage from "./components/RegistrationForm/TrainerPage.jsx";
 
 // Home component
 function Home({ scale }) {
@@ -52,6 +53,7 @@ function Home({ scale }) {
 
 function App() {
   const [scrollY, setScrollY] = useState(0);
+  const [showNavbar, setShowNavbar] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -69,13 +71,22 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Navbar />
+        {/* Conditional Navbar */}
+        {showNavbar && <Navbar />}
+
         <Routes>
           <Route path="/" element={<Home scale={scale} />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/student-registration" element={<Student />} />
           <Route path="/trainer-registration" element={<Trainer />} />
+
+          {/* Pass setShowNavbar to TrainerPage */}
+          <Route
+            path="/trainer"
+            element={<TrainerPage setShowNavbar={setShowNavbar} />}
+          />
+
           <Route path="/course" element={<Course />} />
           <Route path="/login" element={<Login />} />
           <Route path="/Courses/dataScience" element={<DataScience />} />
@@ -87,6 +98,7 @@ function App() {
           <Route path="/Courses/linuxadmin" element={<LinuxAdmin />} />
           <Route path="/Courses/python" element={<AdvancePython />} />
         </Routes>
+
         <Toaster position="top-center" reverseOrder={false} />
       </BrowserRouter>
     </AuthProvider>

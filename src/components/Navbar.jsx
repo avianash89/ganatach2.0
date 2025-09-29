@@ -18,14 +18,15 @@ import {
   FaWhatsapp,
 } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.jsx"; // ✅ AuthContext
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [coursesOpen, setCoursesOpen] = useState(false);
 
-  const { user, student, logout, loading } = useAuth(); // ✅ check both user and student
+  const { user, student, trainer, logoutUser, logoutStudent, loading } =
+    useAuth();
   const navigate = useNavigate();
 
   const link = [
@@ -66,9 +67,9 @@ export default function Navbar() {
     show: { opacity: 1, x: 0, transition: { duration: 0.4, ease: "easeOut" } },
   };
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/");
+  const handleTrainerRegistration = () => {
+    if (trainer) navigate("/trainer");
+    else navigate("/trainer-registration");
   };
 
   return (
@@ -116,31 +117,42 @@ export default function Navbar() {
               </a>
             </div>
           </div>
-          {/* Right Side */}
+
+          {/* Desktop Right Side */}
           <div className="hidden md:flex items-center gap-4">
             {loading ? (
-              // Show nothing or a spinner while checking auth
               <span className="text-white">Loading...</span>
-            ) : user || student ? (
-              <div
-                className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer"
-                onClick={handleLogout}>
-                <IconUserCircle />
-                <span className="text-sm font-semibold capitalize">Logout</span>
-              </div>
             ) : (
               <>
-                <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
-                  <IconUserCircle />
-                  <span className="text-sm font-semibold capitalize">
-                    <Link to="/login">Log in</Link>
+                {user && (
+                  <span
+                    onClick={logoutUser}
+                    className="cursor-pointer text-sm font-semibold text-red-400 hover:text-red-600 flex items-center gap-1">
+                    <IconUserCircle /> Logout
                   </span>
-                </div>
-                <Link
-                  to="/trainer-registration"
-                  className="hover:text-primary whitespace-nowrap">
-                  Trainer Registration
-                </Link>
+                )}
+                {student && (
+                  <span
+                    onClick={logoutStudent}
+                    className="cursor-pointer text-sm font-semibold text-red-400 hover:text-red-600 flex items-center gap-1">
+                    <IconUserCircle /> Logout
+                  </span>
+                )}
+                {!user && !student && (
+                  <>
+                    <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
+                      <IconUserCircle />
+                      <span className="text-sm font-semibold capitalize">
+                        <Link to="/login">Log in</Link>
+                      </span>
+                    </div>
+                    <span
+                      onClick={handleTrainerRegistration}
+                      className="hover:text-primary whitespace-nowrap cursor-pointer">
+                      Trainer Registration
+                    </span>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -148,7 +160,6 @@ export default function Navbar() {
 
         {/* Main Navbar */}
         <nav className="w-full flex justify-between items-center px-4 py-3 md:px-0 bg-bgprimary">
-          {/* Logo */}
           <motion.div className="flex justify-center items-center gap-x-2 cursor-pointer">
             <div className="md:w-10 md:h-10 my-2 overflow-hidden rounded-full h-8 w-8">
               <Link to="/">
@@ -246,17 +257,31 @@ export default function Navbar() {
                   </Link>
                 </motion.div>
 
-                <motion.div variants={linkVariants}>
-                  {user || student ? (
-                    <span
-                      onClick={() => {
-                        handleLogout();
-                        setMenuOpen(false);
-                      }}
-                      className="cursor-pointer text-red-400 hover:text-red-600">
-                      Logout
-                    </span>
-                  ) : (
+                {/* Mobile Logout Buttons */}
+                {user && (
+                  <span
+                    onClick={() => {
+                      logoutUser();
+                      setMenuOpen(false);
+                    }}
+                    className="cursor-pointer text-red-400 hover:text-red-600 flex items-center gap-2">
+                    <IconUserCircle /> Logout
+                  </span>
+                )}
+                {student && (
+                  <span
+                    onClick={() => {
+                      logoutStudent();
+                      setMenuOpen(false);
+                    }}
+                    className="cursor-pointer text-red-400 hover:text-red-600 flex items-center gap-2">
+                    <IconUserCircle /> Logout
+                  </span>
+                )}
+
+                {/*Login or Trainer Registration */}
+                {!user && !student && (
+                  <>
                     <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
                       <IconUserCircle />
                       <span className="text-sm font-semibold capitalize">
@@ -265,20 +290,18 @@ export default function Navbar() {
                         </Link>
                       </span>
                     </div>
-                  )}
-                </motion.div>
-
-                {!user && !student && (
-                  <motion.div variants={linkVariants}>
-                    <Link
-                      to="/trainer-registration"
-                      onClick={() => setMenuOpen(false)}
-                      className="hover:text-primary transition-colors duration-300">
+                    <span
+                      onClick={() => {
+                        setMenuOpen(false);
+                        handleTrainerRegistration();
+                      }}
+                      className="hover:text-primary cursor-pointer">
                       Trainer Registration
-                    </Link>
-                  </motion.div>
+                    </span>
+                  </>
                 )}
 
+                {/* Courses */}
                 <div>
                   <span
                     onClick={() => setCoursesOpen(!coursesOpen)}
@@ -310,7 +333,6 @@ export default function Navbar() {
                     About
                   </Link>
                 </motion.div>
-
                 <motion.div variants={linkVariants}>
                   <Link
                     to="/contact"
@@ -323,6 +345,7 @@ export default function Navbar() {
             </motion.div>
           )}
         </AnimatePresence>
+
         <a
           href="https://wa.me/918340901901"
           target="_blank"
