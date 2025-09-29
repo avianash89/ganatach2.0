@@ -182,6 +182,7 @@ export default function TrainerRegistrationForm() {
                 type="text"
                 maxLength="4"
                 value={enteredOtp}
+                placeholder="Enter OTP"
                 onChange={(e) => setEnteredOtp(e.target.value)}
                 className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 
                   focus:outline-none focus:ring-2 focus:ring-blue-500 

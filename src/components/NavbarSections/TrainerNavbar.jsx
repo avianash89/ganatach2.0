@@ -18,7 +18,7 @@ export default function TrainerNavbar() {
         {/* Left side: Logo + text */}
         <div
           className="flex items-center gap-3 cursor-pointer"
-          onClick={() => navigate("/trainer")}
+          onClick={() => navigate("/")}
         >
           <img src={logo} alt="Logo" className="h-10 w-10 object-cover rounded-full" />
           <span className="md:text-xl text-md font-logo font-medium text-white capitalize">
