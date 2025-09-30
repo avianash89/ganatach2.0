@@ -69,7 +69,7 @@ export default function Navbar() {
 
   const handleTrainerRegistration = () => {
     if (trainer) navigate("/trainer");
-    else navigate("/trainer-registration");
+    else navigate("/trainer-login");
   };
 
   return (

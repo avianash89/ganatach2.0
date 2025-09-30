@@ -22,14 +22,14 @@ export function AuthProvider({ children }) {
         setStudent(null);
       }
 
-      try {
-        const userRes = await axios.get("http://localhost:5000/api/auth/check", {
-          withCredentials: true,
-        });
-        setUser(userRes.data.user || null);
-      } catch {
-        setUser(null);
-      }
+      // try {
+      //   const userRes = await axios.get("http://localhost:5000/api/auth/check", {
+      //     withCredentials: true,
+      //   });
+      //   setUser(userRes.data.user || null);
+      // } catch {
+      //   setUser(null);
+      // }
 
       try {
         const trainerRes = await axios.get("http://localhost:5000/api/trainers/check-auth", {
@@ -51,7 +51,7 @@ export function AuthProvider({ children }) {
     const endpoint =
       role === "student"
         ? "http://localhost:5000/api/students/verify-otp"
-        : "http://localhost:5000/api/auth/verify-otp";
+        : "http://localhost:5000/api/students/verify-otp";
 
     const res = await axios.post(endpoint, { mobile, enteredOtp: otp }, { withCredentials: true });
 

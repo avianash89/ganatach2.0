@@ -28,6 +28,7 @@ import LinuxAdmin from "./components/Course/LinuxAdmin.jsx";
 import AdvancePython from "./components/Course/AdvancePython.jsx";
 import { AuthProvider } from "../src/context/AuthContext.jsx";
 import TrainerPage from "./components/RegistrationForm/TrainerPage.jsx";
+import TrainerLogin from "./components/NavbarSections/TrainerLogin.jsx";
 
 // Home component
 function Home({ scale }) {
@@ -80,6 +81,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/student-registration" element={<Student />} />
           <Route path="/trainer-registration" element={<Trainer />} />
+          <Route path="/trainer-login" element={<TrainerLogin />} />
 
           {/* Pass setShowNavbar to TrainerPage */}
           <Route

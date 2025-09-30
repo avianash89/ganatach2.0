@@ -1,28 +1,28 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext.jsx";
 
-export default function Login() {
-  const { loginWithOtp } = useAuth(); // ✅ AuthContext login function
-  const [mobile, setMobile] = useState("");
+export default function TrainerLogin() {
+  const { loginTrainerWithOtp } = useAuth();
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [enteredOtp, setEnteredOtp] = useState("");
+  const navigate = useNavigate();
 
-  // 🔹 Send OTP via backend
   const handleSendOtp = async (e) => {
     e.preventDefault();
 
-    if (!/^\d{10}$/.test(mobile)) {
+    if (!/^\d{10}$/.test(phoneNumber)) {
       toast.error("Please enter a valid 10-digit mobile number!");
       return;
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/students/send-otp", {
+      const res = await fetch("http://localhost:5000/api/trainers/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobile }),
+        body: JSON.stringify({ phoneNumber }),
       });
 
       const data = await res.json();
@@ -31,7 +31,7 @@ export default function Login() {
         toast.success(data.message);
         setOtpSent(true);
       } else {
-        toast.error(data.message);
+        toast.error(data.message || "Failed to send OTP");
       }
     } catch (err) {
       toast.error("Server error. Please try again later.");
@@ -39,7 +39,6 @@ export default function Login() {
     }
   };
 
-  // 🔹 Validate OTP via AuthContext
   const handleValidateOtp = async (e) => {
     e.preventDefault();
 
@@ -49,16 +48,14 @@ export default function Login() {
     }
 
     try {
-      await loginWithOtp("user", mobile, enteredOtp); // specify role
-      toast.success("✅ Login Successful!");
-      window.location.href = "/"; // Redirect to homepage
+      const trainer = await loginTrainerWithOtp(phoneNumber, enteredOtp);
 
-      // Reset form
-      setMobile("");
-      setEnteredOtp("");
-      setOtpSent(false);
+      if (trainer) {
+        toast.success("✅ Login Successful!");
+        navigate("/trainer");
+      }
     } catch (err) {
-      toast.error(err.response?.data?.message || err.message || "Invalid OTP");
+      toast.error(err.response?.data?.message || "Invalid OTP");
       console.error(err);
     }
   };
@@ -74,34 +71,27 @@ export default function Login() {
         </Link>
 
         <h2 className="text-2xl font-semibold text-center mb-6">
-          Login with OTP
+          Trainer Login with OTP
         </h2>
 
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="space-y-4">
-            <div>
-              <label className="block font-medium text-gray-700">Mobile Number</label>
-              <input
-                type="tel"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                required
-                placeholder="Enter 10-digit mobile"
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
-            >
+            <input
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              required
+              placeholder="Enter 10-digit mobile"
+              className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">
               Send OTP
             </button>
           </form>
         ) : (
           <form onSubmit={handleValidateOtp} className="space-y-4">
             <p className="text-center text-gray-700">
-              OTP sent to <strong>{mobile}</strong>
+              OTP sent to <strong>{phoneNumber}</strong>
             </p>
 
             <input
@@ -113,18 +103,15 @@ export default function Login() {
               className="mt-1 w-full border border-gray-300 rounded-md p-3 text-center tracking-widest text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
-            <button
-              type="submit"
-              className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition"
-            >
+            <button type="submit" className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition">
               Validate OTP & Login
             </button>
           </form>
         )}
 
         <div className="mt-4 text-center">
-          <Link to="/student-registration" className="text-blue-600 hover:underline">
-            New user? Signup
+          <Link to="/trainer-registration" className="text-blue-600 hover:underline">
+            New trainer? Signup
           </Link>
         </div>
       </div>
