@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import TrainerNavbar from "../NavbarSections/TrainerNavbar.jsx";
+import toast from "react-hot-toast";
 
 export default function TrainerPage({ setShowNavbar }) {
   const [trainers, setTrainers] = useState([]);
@@ -27,9 +28,11 @@ export default function TrainerPage({ setShowNavbar }) {
       .then((res) => {
         setTrainers(res.data);
         setLoading(false);
+        toast.success("✅ Trainers loaded successfully!");
       })
       .catch((err) => {
         console.error("Error fetching trainers:", err);
+        toast.error("❌ Failed to fetch trainers.");
         setLoading(false);
       });
   }, []);
@@ -41,8 +44,10 @@ export default function TrainerPage({ setShowNavbar }) {
     try {
       await axios.delete(`http://localhost:5000/api/trainers/${id}`);
       setTrainers(trainers.filter((trainer) => trainer._id !== id));
+      toast.success("🗑️ Trainer deleted successfully!");
     } catch (err) {
       console.error("Error deleting trainer:", err);
+      toast.error("❌ Failed to delete trainer.");
     }
   };
 

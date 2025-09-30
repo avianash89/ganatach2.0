@@ -2,13 +2,15 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/Logo.jpg";
 import { useAuth } from "../../context/AuthContext.jsx";
+import toast from "react-hot-toast";
 
 export default function TrainerNavbar() {
   const navigate = useNavigate();
-  const { logoutTrainer  } = useAuth();
+  const { logoutTrainer } = useAuth();
 
   const handleLogout = async () => {
-    await logoutTrainer ();
+    await logoutTrainer();
+    toast.success("Trainer Logout successfully");
     navigate("/"); // redirect to home
   };
 
@@ -18,9 +20,12 @@ export default function TrainerNavbar() {
         {/* Left side: Logo + text */}
         <div
           className="flex items-center gap-3 cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          <img src={logo} alt="Logo" className="h-10 w-10 object-cover rounded-full" />
+          onClick={() => navigate("/")}>
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-10 w-10 object-cover rounded-full"
+          />
           <span className="md:text-xl text-md font-logo font-medium text-white capitalize">
             Gana Tech Solution
           </span>
@@ -29,8 +34,7 @@ export default function TrainerNavbar() {
         {/* Right side: Logout */}
         <button
           onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium transition duration-300"
-        >
+          className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium transition duration-300">
           Logout
         </button>
       </div>

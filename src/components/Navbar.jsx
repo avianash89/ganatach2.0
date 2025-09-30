@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
+import toast from "react-hot-toast";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -124,16 +125,12 @@ export default function Navbar() {
               <span className="text-white">Loading...</span>
             ) : (
               <>
-                {user && (
-                  <span
-                    onClick={logoutUser}
-                    className="cursor-pointer text-sm font-semibold text-red-400 hover:text-red-600 flex items-center gap-1">
-                    <IconUserCircle /> Logout
-                  </span>
-                )}
                 {student && (
                   <span
-                    onClick={logoutStudent}
+                    onClick={() => {
+                      logoutStudent();
+                      toast.success("Logout successfully");
+                    }}
                     className="cursor-pointer text-sm font-semibold text-red-400 hover:text-red-600 flex items-center gap-1">
                     <IconUserCircle /> Logout
                   </span>
@@ -262,6 +259,7 @@ export default function Navbar() {
                   <span
                     onClick={() => {
                       logoutUser();
+                      toast.success("Logout successfully");
                       setMenuOpen(false);
                     }}
                     className="cursor-pointer text-red-400 hover:text-red-600 flex items-center gap-2">

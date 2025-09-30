@@ -32,7 +32,7 @@ export default function TrainerRegistrationForm() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/trainers/send-otp", {
+      const res = await fetch("http://localhost:5000/api/trainers/signup-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

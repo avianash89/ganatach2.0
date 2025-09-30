@@ -19,7 +19,7 @@ export default function Login() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/students/send-otp", {
+      const res = await fetch("http://localhost:5000/api/students/login-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile }),

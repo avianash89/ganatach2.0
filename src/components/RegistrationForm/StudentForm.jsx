@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // ✅ useNavigate added
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext.jsx";
 import axios from "axios";
 
 export default function StudentForm() {
-  const { loginWithOtp } = useAuth(); 
-  const navigate = useNavigate(); // ✅ hook for navigation
+  const { loginWithOtp } = useAuth();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -19,14 +19,14 @@ export default function StudentForm() {
   const [enteredOtp, setEnteredOtp] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Send OTP
+  // ✅ Handle Signup + OTP sending
   const handleSendOtp = async (e) => {
     e.preventDefault();
+
     if (!/^\d{10}$/.test(formData.mobile)) {
       toast.error("Please enter a valid 10-digit mobile number!");
       return;
@@ -35,16 +35,18 @@ export default function StudentForm() {
     setLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/students/send-otp",
+        "http://localhost:5000/api/students/signup-otp",
         formData,
         { withCredentials: true }
       );
 
-      if (res.data.success) {
+      if (res.data.alreadyExists) {
+        // Student exists → just show alert
+        toast.error(res.data.message);
+      } else if (res.data.success) {
+        // New student → OTP sent
         toast.success(res.data.message);
         setOtpSent(true);
-      } else {
-        toast.error(res.data.message || "Failed to send OTP");
       }
     } catch (err) {
       console.error("Send OTP error:", err);
@@ -54,9 +56,10 @@ export default function StudentForm() {
     }
   };
 
-  // Verify OTP and login
+  // ✅ Handle OTP verification
   const handleOtpValidation = async (e) => {
     e.preventDefault();
+
     if (!enteredOtp) {
       toast.error("Enter OTP!");
       return;
@@ -67,12 +70,10 @@ export default function StudentForm() {
       await loginWithOtp("student", formData.mobile, enteredOtp);
       toast.success("✅ OTP Verified! Student Enquiry Submitted.");
 
-      // ✅ Close the form after success
-      setTimeout(() => {
-        navigate("/"); // redirect to homepage
-      }, 1000);
+      // Redirect after success
+      setTimeout(() => navigate("/"), 1000);
 
-      // Reset form states
+      // Reset form state
       setOtpSent(false);
       setEnteredOtp("");
       setFormData({ name: "", mobile: "", course: "", email: "", message: "" });
