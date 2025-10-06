@@ -10,7 +10,7 @@ import heroBg from "./assets/heroBg.avif";
 import Achievement from "./components/sections/Achievement";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import About from "./components/NavbarSections/About";
 import Contact from "./components/NavbarSections/Contact";
 import Student from "./components/RegistrationForm/StudentForm.jsx";
@@ -26,11 +26,12 @@ import DevOps from "./components/Course/DevOps.jsx";
 import AzureSolution from "./components/Course/AzureSolution.jsx";
 import LinuxAdmin from "./components/Course/LinuxAdmin.jsx";
 import AdvancePython from "./components/Course/AdvancePython.jsx";
-import { AuthProvider } from "../src/context/AuthContext.jsx";
+import { useAuth } from "./context/AuthContext.jsx";
 import TrainerPage from "./components/RegistrationForm/TrainerPage.jsx";
 import TrainerLogin from "./components/NavbarSections/TrainerLogin.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
+import TrainerProtectedRoute from "./components/ProtectedRoute/TrainerProtectedRoute.jsx";
 
-// Home component
 function Home({ scale }) {
   return (
     <div className="w-full overflow-x-hidden relative font-global">
@@ -52,7 +53,7 @@ function Home({ scale }) {
   );
 }
 
-function App() {
+export default function App() {
   const [scrollY, setScrollY] = useState(0);
   const [showNavbar, setShowNavbar] = useState(true);
 
@@ -62,49 +63,44 @@ function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    window.history.scrollRestoration = "manual";
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, []);
-
   const scale = 1 + (scrollY / window.innerHeight) * 0.1;
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        {/* Conditional Navbar */}
-        {showNavbar && <Navbar />}
+    <BrowserRouter>
+      <ScrollToTop />
+      {showNavbar && <Navbar />}
 
-        <Routes>
-          <Route path="/" element={<Home scale={scale} />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/student-registration" element={<Student />} />
-          <Route path="/trainer-registration" element={<Trainer />} />
-          <Route path="/trainer-login" element={<TrainerLogin />} />
+      <Routes>
+        <Route path="/" element={<Home scale={scale} />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/student-registration" element={<Student />} />
+        <Route path="/trainer-registration" element={<Trainer />} />
+        <Route path="/trainer-login" element={<TrainerLogin />} />
 
-          {/* Pass setShowNavbar to TrainerPage */}
-          <Route
-            path="/trainer"
-            element={<TrainerPage setShowNavbar={setShowNavbar} />}
-          />
+        {/* ✅ Protected Trainer Route */}
+        <Route
+          path="/trainer"
+          element={
+            <TrainerProtectedRoute>
+              <TrainerPage setShowNavbar={setShowNavbar} />
+            </TrainerProtectedRoute>
+          }
+        />
 
-          <Route path="/course" element={<Course />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/Courses/dataScience" element={<DataScience />} />
-          <Route path="/Courses/ai" element={<ArtificialIntelligence />} />
-          <Route path="/Courses/ml" element={<MachineLearning />} />
-          <Route path="/Courses/aws" element={<Aws />} />
-          <Route path="/Courses/devops" element={<DevOps />} />
-          <Route path="/Courses/azureSolution" element={<AzureSolution />} />
-          <Route path="/Courses/linuxadmin" element={<LinuxAdmin />} />
-          <Route path="/Courses/python" element={<AdvancePython />} />
-        </Routes>
+        <Route path="/course" element={<Course />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/Courses/dataScience" element={<DataScience />} />
+        <Route path="/Courses/ai" element={<ArtificialIntelligence />} />
+        <Route path="/Courses/ml" element={<MachineLearning />} />
+        <Route path="/Courses/aws" element={<Aws />} />
+        <Route path="/Courses/devops" element={<DevOps />} />
+        <Route path="/Courses/azureSolution" element={<AzureSolution />} />
+        <Route path="/Courses/linuxadmin" element={<LinuxAdmin />} />
+        <Route path="/Courses/python" element={<AdvancePython />} />
+      </Routes>
 
-        <Toaster position="top-center" reverseOrder={false} />
-      </BrowserRouter>
-    </AuthProvider>
+      <Toaster position="top-center" reverseOrder={false} />
+    </BrowserRouter>
   );
 }
-
-export default App;

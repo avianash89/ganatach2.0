@@ -1,13 +1,14 @@
 // src/components/Navbar.jsx
 import { Container } from "./Container";
 import logo from "../assets/Logo.jpg";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   IconMenu2,
   IconUserCircle,
   IconX,
   IconPhone,
   IconMail,
+  IconSearch,
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -25,6 +26,10 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [coursesOpen, setCoursesOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const searchRef = useRef(null);
 
   const { user, student, trainer, logoutUser, logoutStudent, loading } =
     useAuth();
@@ -48,6 +53,24 @@ export default function Navbar() {
     { name: "About", link: "/about" },
     { name: "Contact", link: "/contact" },
   ];
+
+  const courses = link.find((item) => item.name === "Courses")?.dropdown || [];
+
+  const filteredCourses = courses.filter((course) =>
+    course.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // 🔹 Detect click outside search box
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const menuVariants = {
     hidden: { x: "100%", opacity: 0 },
@@ -76,7 +99,7 @@ export default function Navbar() {
   return (
     <div className="w-full bg-bgprimary top-0 left-0 z-50 fixed shadow-md">
       <Container>
-        {/* Top Bar */}
+        {/* 🔝 Top Bar */}
         <div className="bg-bgprimary text-white text-xs sm:text-sm px-4 py-2 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6">
             <div className="flex items-center gap-2">
@@ -92,34 +115,38 @@ export default function Navbar() {
                 href="https://www.instagram.com/ganatech901/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-pink-500">
+                className="hover:text-pink-500"
+              >
                 <FaInstagram />
               </a>
               <a
                 href="https://www.facebook.com/ganatech.co.in"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-blue-600">
+                className="hover:text-blue-600"
+              >
                 <FaFacebook />
               </a>
               <a
                 href="https://www.youtube.com/channel/UC1T_OImlb4wBhbvcJ3-w_Hg"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-red-600">
+                className="hover:text-red-600"
+              >
                 <FaYoutube />
               </a>
               <a
                 href="https://x.com/ganatech123"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-gray-800">
+                className="hover:text-gray-800"
+              >
                 <FaXTwitter />
               </a>
             </div>
           </div>
 
-          {/* Desktop Right Side */}
+          {/* Right Side Login/Logout */}
           <div className="hidden md:flex items-center gap-4">
             {loading ? (
               <span className="text-white">Loading...</span>
@@ -131,21 +158,23 @@ export default function Navbar() {
                       logoutStudent();
                       toast.success("Logout successfully");
                     }}
-                    className="cursor-pointer text-sm font-semibold text-red-400 hover:text-red-600 flex items-center gap-1">
+                    className="cursor-pointer text-sm font-semibold text-red-400 hover:text-red-600 flex items-center gap-1"
+                  >
                     <IconUserCircle /> Logout
                   </span>
                 )}
-                {!user && !student && (
+                {!student && (
                   <>
                     <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
                       <IconUserCircle />
                       <span className="text-sm font-semibold capitalize">
-                        <Link to="/login">Log in</Link>
+                        <Link to="/login">Student Log in</Link>
                       </span>
                     </div>
                     <span
                       onClick={handleTrainerRegistration}
-                      className="hover:text-primary whitespace-nowrap cursor-pointer">
+                      className="hover:text-primary whitespace-nowrap cursor-pointer"
+                    >
                       Trainer Registration
                     </span>
                   </>
@@ -155,8 +184,9 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Main Navbar */}
-        <nav className="w-full flex justify-between items-center px-4 py-3 md:px-0 bg-bgprimary">
+        {/* 🌐 Main Navbar */}
+        <nav className="w-full flex justify-between items-center px-4 py-3 md:px-0 bg-bgprimary relative">
+          {/* Logo */}
           <motion.div className="flex justify-center items-center gap-x-2 cursor-pointer">
             <div className="md:w-10 md:h-10 my-2 overflow-hidden rounded-full h-8 w-8">
               <Link to="/">
@@ -182,7 +212,8 @@ export default function Navbar() {
                   key={i}
                   className="relative"
                   onMouseEnter={() => setDropdownOpen(item.name)}
-                  onMouseLeave={() => setDropdownOpen(null)}>
+                  onMouseLeave={() => setDropdownOpen(null)}
+                >
                   <span className="hover:text-primary cursor-pointer">
                     {item.name}
                   </span>
@@ -193,12 +224,14 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 bg-white text-black font-light rounded-lg shadow-lg w-48 max-h-60 overflow-y-auto">
+                        className="absolute top-full left-0 mt-2 bg-white text-black font-light rounded-lg shadow-lg w-48 max-h-60 overflow-y-auto"
+                      >
                         {item.dropdown.map((sub, idx) => (
                           <Link
                             key={idx}
                             to={sub.link}
-                            className="block px-4 py-2 hover:bg-gray-200">
+                            className="block px-4 py-2 hover:bg-gray-200"
+                          >
                             {sub.name}
                           </Link>
                         ))}
@@ -210,14 +243,54 @@ export default function Navbar() {
                 <Link
                   key={i}
                   to={item.link}
-                  className="hover:text-primary transition-colors duration-300 hover:cursor-pointer">
+                  className="hover:text-primary transition-colors duration-300 hover:cursor-pointer"
+                >
                   {item.name}
                 </Link>
               )
             )}
+
+            {/* 🔍 Search */}
+            <div className="relative" ref={searchRef}>
+              <IconSearch
+                size={22}
+                className="cursor-pointer hover:text-primary"
+                onClick={() => setSearchOpen(!searchOpen)}
+              />
+              {searchOpen && (
+                <div className="absolute right-0 mt-2 bg-white p-3 rounded-lg shadow-lg w-64 text-black">
+                  <input
+                    type="text"
+                    placeholder="Search Courses..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full border border-gray-300 rounded px-2 py-1 mb-2 focus:outline-none"
+                  />
+                  <div className="max-h-40 overflow-y-auto">
+                    {filteredCourses.length > 0 ? (
+                      filteredCourses.map((course) => (
+                        <Link
+                          key={course.name}
+                          to={course.link}
+                          className="block px-2 py-1 hover:bg-gray-200 rounded"
+                          onClick={() => {
+                            setSearchOpen(false);
+                            setSearchTerm("");
+                          }}
+                        >
+                          {course.name}
+                        </Link>
+                      ))
+                    ) : (
+                      <p className="text-sm text-gray-500">No results found</p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Mobile Toggle */}
+          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center justify-center cursor-pointer w-9 h-9 z-50 relative">
             {menuOpen ? (
               <IconX
@@ -235,7 +308,7 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* Mobile Menu */}
+        {/* 📱 Mobile Menu */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
@@ -243,48 +316,40 @@ export default function Navbar() {
               animate="show"
               exit="exit"
               variants={menuVariants}
-              className="absolute top-16 left-0 w-full h-screen bg-bgprimary px-6 py-10 md:hidden overflow-y-auto">
+              className="absolute top-16 left-0 w-full h-screen bg-bgprimary px-6 py-10 md:hidden overflow-y-auto"
+            >
               <div className="flex flex-col gap-y-6 mb-8 text-white text-lg font-logo font-extralight">
                 <motion.div variants={linkVariants}>
                   <Link
                     to="/"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary transition-colors duration-300">
+                    className="hover:text-primary transition-colors duration-300"
+                  >
                     Home
                   </Link>
                 </motion.div>
 
-                {/* Mobile Logout Buttons */}
-                {user && (
-                  <span
-                    onClick={() => {
-                      logoutUser();
-                      toast.success("Logout successfully");
-                      setMenuOpen(false);
-                    }}
-                    className="cursor-pointer text-red-400 hover:text-red-600 flex items-center gap-2">
-                    <IconUserCircle /> Logout
-                  </span>
-                )}
+                {/* Logout */}
                 {student && (
                   <span
                     onClick={() => {
                       logoutStudent();
                       setMenuOpen(false);
                     }}
-                    className="cursor-pointer text-red-400 hover:text-red-600 flex items-center gap-2">
+                    className="cursor-pointer text-red-400 hover:text-red-600 flex items-center gap-2"
+                  >
                     <IconUserCircle /> Logout
                   </span>
                 )}
 
-                {/*Login or Trainer Registration */}
-                {!user && !student && (
+                {/* Login / Trainer Registration */}
+                {!student && (
                   <>
                     <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
                       <IconUserCircle />
                       <span className="text-sm font-semibold capitalize">
                         <Link to="/login" onClick={() => setMenuOpen(false)}>
-                          Log in
+                          Student Log in
                         </Link>
                       </span>
                     </div>
@@ -293,32 +358,33 @@ export default function Navbar() {
                         setMenuOpen(false);
                         handleTrainerRegistration();
                       }}
-                      className="hover:text-primary cursor-pointer">
+                      className="hover:text-primary cursor-pointer"
+                    >
                       Trainer Registration
                     </span>
                   </>
                 )}
 
-                {/* Courses */}
+                {/* Mobile Courses */}
                 <div>
                   <span
                     onClick={() => setCoursesOpen(!coursesOpen)}
-                    className="font-semibold text-white cursor-pointer flex justify-between items-center">
+                    className="font-semibold text-white cursor-pointer flex justify-between items-center"
+                  >
                     Courses <span>{coursesOpen ? "▲" : "▼"}</span>
                   </span>
                   {coursesOpen && (
                     <div className="ml-4 mt-2 flex flex-col gap-y-2 max-h-60 overflow-y-auto">
-                      {link
-                        .find((item) => item.name === "Courses")
-                        ?.dropdown.map((sub) => (
-                          <Link
-                            key={sub.name}
-                            to={sub.link}
-                            onClick={() => setMenuOpen(false)}
-                            className="text-sm hover:text-primary">
-                            {sub.name}
-                          </Link>
-                        ))}
+                      {courses.map((sub) => (
+                        <Link
+                          key={sub.name}
+                          to={sub.link}
+                          onClick={() => setMenuOpen(false)}
+                          className="text-sm hover:text-primary"
+                        >
+                          {sub.name}
+                        </Link>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -327,7 +393,8 @@ export default function Navbar() {
                   <Link
                     to="/about"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary transition-colors duration-300">
+                    className="hover:text-primary transition-colors duration-300"
+                  >
                     About
                   </Link>
                 </motion.div>
@@ -335,7 +402,8 @@ export default function Navbar() {
                   <Link
                     to="/contact"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary transition-colors duration-300">
+                    className="hover:text-primary transition-colors duration-300"
+                  >
                     Contact
                   </Link>
                 </motion.div>
@@ -344,11 +412,13 @@ export default function Navbar() {
           )}
         </AnimatePresence>
 
+        {/* 📞 WhatsApp Button */}
         <a
           href="https://wa.me/918340901901"
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed bottom-6 right-6 bg-black text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition z-50">
+          className="fixed bottom-6 right-6 bg-black text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition z-50"
+        >
           <FaWhatsapp size={28} />
         </a>
       </Container>

@@ -66,7 +66,6 @@ export default function OurTrainingPart() {
                         variants={fadeUp}
                     >
                         <motion.img
-                            m
                             src={careerBG}
                             className="h-full w-full object-cover"
                             style={{ scale, opacity }}
