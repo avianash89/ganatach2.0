@@ -10,7 +10,7 @@ import heroBg from "./assets/heroBg.avif";
 import Achievement from "./components/sections/Achievement";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import About from "./components/NavbarSections/About";
 import Contact from "./components/NavbarSections/Contact";
 import Student from "./components/RegistrationForm/StudentForm.jsx";
@@ -26,11 +26,14 @@ import DevOps from "./components/Course/DevOps.jsx";
 import AzureSolution from "./components/Course/AzureSolution.jsx";
 import LinuxAdmin from "./components/Course/LinuxAdmin.jsx";
 import AdvancePython from "./components/Course/AdvancePython.jsx";
-import { useAuth } from "./context/AuthContext.jsx";
 import TrainerPage from "./components/RegistrationForm/TrainerPage.jsx";
 import TrainerLogin from "./components/NavbarSections/TrainerLogin.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import TrainerProtectedRoute from "./components/ProtectedRoute/TrainerProtectedRoute.jsx";
+import AdminPage from "./components/Admin/AdminPage.jsx";
+import EditTrainer from "./Pages/EditTrainer.jsx";
+import EditStudent from "./Pages/EditStudent.jsx";
+import AdminLogin from "./components/Admin/AdminLogin.jsx";
 
 function Home({ scale }) {
   return (
@@ -78,6 +81,27 @@ export default function App() {
         <Route path="/trainer-registration" element={<Trainer />} />
         <Route path="/trainer-login" element={<TrainerLogin />} />
 
+        {/* ✅ Pass setShowNavbar to AdminPage */}
+        <Route
+          path="/admin-login"
+          element={<AdminLogin setShowNavbar={setShowNavbar} />}
+        />
+
+        <Route
+          path="/edit-trainer/:id"
+          element={<EditTrainer setShowNavbar={setShowNavbar} />}
+        />
+
+        <Route
+          path="/edit-student/:id"
+          element={<EditStudent setShowNavbar={setShowNavbar} />}
+        />
+
+        <Route
+          path="/admin-dashboard"
+          element={<AdminPage setShowNavbar={setShowNavbar} />}
+        />
+
         {/* ✅ Protected Trainer Route */}
         <Route
           path="/trainer"
@@ -87,7 +111,7 @@ export default function App() {
             </TrainerProtectedRoute>
           }
         />
-
+        {/* Course */}
         <Route path="/course" element={<Course />} />
         <Route path="/login" element={<Login />} />
         <Route path="/Courses/dataScience" element={<DataScience />} />

@@ -30,7 +30,7 @@ export default function About() {
       <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-400 mb-10">
         About Us
       </h1>
-      <div className="absolute w-full h-full bg-bgprimary -z-10 top-40"></div>
+      <div className="absolute w-full bg-bgprimary -z-10 top-40"></div>
 
       <Container className="px-4">
         <div className="w-full mt-0 md:mt-40 md:h-[1199px] md:mb-40 md:flex flex-col md:flex-row border border-text-secondary bg-bgprimary relative">

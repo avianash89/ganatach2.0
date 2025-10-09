@@ -23,15 +23,12 @@ export default function StudentForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle Signup + OTP sending
   const handleSendOtp = async (e) => {
     e.preventDefault();
-
     if (!/^\d{10}$/.test(formData.mobile)) {
       toast.error("Please enter a valid 10-digit mobile number!");
       return;
     }
-
     setLoading(true);
     try {
       const res = await axios.post(
@@ -39,12 +36,9 @@ export default function StudentForm() {
         formData,
         { withCredentials: true }
       );
-
       if (res.data.alreadyExists) {
-        // Student exists → just show alert
         toast.error(res.data.message);
       } else if (res.data.success) {
-        // New student → OTP sent
         toast.success(res.data.message);
         setOtpSent(true);
       }
@@ -56,24 +50,17 @@ export default function StudentForm() {
     }
   };
 
-  // ✅ Handle OTP verification
   const handleOtpValidation = async (e) => {
     e.preventDefault();
-
     if (!enteredOtp) {
       toast.error("Enter OTP!");
       return;
     }
-
     setLoading(true);
     try {
       await loginWithOtp("student", formData.mobile, enteredOtp);
       toast.success("✅ OTP Verified! Student Enquiry Submitted.");
-
-      // Redirect after success
       setTimeout(() => navigate("/"), 1000);
-
-      // Reset form state
       setOtpSent(false);
       setEnteredOtp("");
       setFormData({ name: "", mobile: "", course: "", email: "", message: "" });
@@ -86,91 +73,63 @@ export default function StudentForm() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-[2px] px-4 sm:px-6">
-      <div className="w-full max-w-md relative bg-white shadow-md rounded-lg p-6 sm:p-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 px-4 sm:px-6">
+      <div className="relative w-full max-w-md sm:max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden p-6 sm:p-8">
+        {/* Decorative Circles */}
+        <div className="absolute -top-12 -right-12 w-32 h-32 sm:w-40 sm:h-40 bg-gradient-to-tr from-purple-400 to-indigo-500 rounded-full opacity-30 animate-pulse"></div>
+        <div className="absolute -bottom-12 -left-12 w-32 h-32 sm:w-40 sm:h-40 bg-gradient-to-br from-green-400 to-teal-500 rounded-full opacity-30 animate-pulse"></div>
+
         <Link
           to="/"
-          className="absolute top-3 right-3 text-gray-600 hover:text-red-500 text-xl font-bold"
+          className="absolute top-3 sm:top-4 right-3 sm:right-4 text-gray-600 hover:text-red-500 text-xl sm:text-2xl font-bold"
         >
           ❌
         </Link>
 
-        <h2 className="text-xl sm:text-2xl font-semibold text-center mb-6 border-b pb-2">
+        <h2 className="text-xl sm:text-2xl font-bold text-center mb-5 sm:mb-6 text-indigo-700 border-b pb-2">
           Students Enquiry Form
         </h2>
 
         {!otpSent ? (
-          <form onSubmit={handleSendOtp} className="space-y-4">
-            <div>
-              <label className="block font-medium">Name *</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+          <form onSubmit={handleSendOtp} className="space-y-4 sm:space-y-5">
+            {["name", "mobile", "course", "email"].map((field) => (
+              <div key={field}>
+                <label className="block text-gray-700 font-medium capitalize text-sm sm:text-base">{field} *</label>
+                <input
+                  type={field === "email" ? "email" : "text"}
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleChange}
+                  required
+                  placeholder={`Enter ${field}`}
+                  className="mt-1 w-full border border-gray-300 rounded-xl p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition text-sm sm:text-base"
+                />
+              </div>
+            ))}
 
             <div>
-              <label className="block font-medium">Mobile *</label>
-              <input
-                type="tel"
-                name="mobile"
-                value={formData.mobile}
-                onChange={handleChange}
-                required
-                placeholder="Enter 10-digit mobile"
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Course *</label>
-              <input
-                type="text"
-                name="course"
-                value={formData.course}
-                onChange={handleChange}
-                required
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium">Message</label>
+              <label className="block text-gray-700 font-medium text-sm sm:text-base">Message</label>
               <textarea
                 name="message"
                 rows="3"
                 value={formData.message}
                 onChange={handleChange}
-                className="mt-1 w-full border border-gray-300 rounded-md p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Optional message"
+                className="mt-1 w-full border border-gray-300 rounded-xl p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition text-sm sm:text-base"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-green-600 text-white font-medium py-2 sm:py-3 px-4 rounded-md hover:bg-green-700 transition disabled:opacity-50"
+              className="w-full py-2 sm:py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-2xl shadow-lg hover:scale-105 transform transition disabled:opacity-50 text-sm sm:text-base"
             >
               {loading ? "Sending OTP..." : "Send OTP"}
             </button>
           </form>
         ) : (
-          <form onSubmit={handleOtpValidation} className="space-y-4">
-            <p className="text-center text-gray-700">
+          <form onSubmit={handleOtpValidation} className="space-y-4 sm:space-y-5">
+            <p className="text-center text-gray-700 text-sm sm:text-base">
               OTP sent to <strong>{formData.mobile}</strong>
             </p>
 
@@ -180,13 +139,13 @@ export default function StudentForm() {
               value={enteredOtp}
               onChange={(e) => setEnteredOtp(e.target.value)}
               placeholder="Enter OTP"
-              className="mt-1 w-full border border-gray-300 rounded-md p-3 text-center tracking-widest text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 w-full border border-gray-300 rounded-xl p-2 sm:p-3 text-center text-lg tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
             />
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white font-medium py-2 sm:py-3 px-4 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+              className="w-full py-2 sm:py-3 bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold rounded-2xl shadow-lg hover:scale-105 transform transition disabled:opacity-50 text-sm sm:text-base"
             >
               {loading ? "Verifying OTP..." : "Validate OTP & Submit"}
             </button>
