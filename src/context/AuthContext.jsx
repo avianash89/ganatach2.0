@@ -7,12 +7,14 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [student, setStudent] = useState(null);
-  const [trainer, setTrainer] = useState(null); // ✅ trainer
+  const [trainer, setTrainer] = useState(null);
+  const [admin, setAdmin] = useState(null); // ✅ Admin state
   const [loading, setLoading] = useState(true);
 
   // ✅ Check login on refresh
   useEffect(() => {
     const checkAuth = async () => {
+      // Student auth
       try {
         const studentRes = await axios.get("http://localhost:5000/api/students/check-auth", {
           withCredentials: true,
@@ -22,15 +24,7 @@ export function AuthProvider({ children }) {
         setStudent(null);
       }
 
-      // try {
-      //   const userRes = await axios.get("http://localhost:5000/api/auth/check", {
-      //     withCredentials: true,
-      //   });
-      //   setUser(userRes.data.user || null);
-      // } catch {
-      //   setUser(null);
-      // }
-
+      // Trainer auth
       try {
         const trainerRes = await axios.get("http://localhost:5000/api/trainers/check-auth", {
           withCredentials: true,
@@ -38,6 +32,21 @@ export function AuthProvider({ children }) {
         setTrainer(trainerRes.data.trainer || null);
       } catch {
         setTrainer(null);
+      }
+
+      // Admin auth
+      try {
+        const token = localStorage.getItem("adminToken");
+        if (token) {
+          const res = await axios.get("http://localhost:5000/api/admin/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setAdmin(res.data.admin || null);
+        } else {
+          setAdmin(null);
+        }
+      } catch {
+        setAdmin(null);
       }
 
       setLoading(false);
@@ -74,7 +83,27 @@ export function AuthProvider({ children }) {
     setTrainer(res.data.trainer);
     setUser(null);
     setStudent(null);
+    setAdmin(null); // clear admin
     return res.data.trainer;
+  };
+
+  // ✅ Admin login
+  const loginAdmin = async (username, password) => {
+    const res = await axios.post("http://localhost:5000/api/admin/login", { username, password });
+
+    if (res.data.success) {
+      const token = res.data.token;
+      localStorage.setItem("adminToken", token); // Save admin JWT
+      setAdmin(res.data.admin);
+
+      // Clear other roles
+      setUser(null);
+      setStudent(null);
+      setTrainer(null);
+      return res.data.admin;
+    } else {
+      throw new Error(res.data.message || "Login failed");
+    }
   };
 
   // ✅ Logout functions
@@ -105,17 +134,25 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const logoutAdmin = () => {
+    localStorage.removeItem("adminToken");
+    setAdmin(null);
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         student,
         trainer,
+        admin,
         loginWithOtp,
         loginTrainerWithOtp,
+        loginAdmin,
         logoutUser,
         logoutStudent,
         logoutTrainer,
+        logoutAdmin,
         loading,
       }}
     >

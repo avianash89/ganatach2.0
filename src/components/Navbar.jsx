@@ -21,6 +21,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -28,46 +29,52 @@ export default function Navbar() {
   const [coursesOpen, setCoursesOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [courses, setCourses] = useState([]);
 
   const searchRef = useRef(null);
-
-  const { user, student, trainer, logoutUser, logoutStudent, loading } =
-    useAuth();
+  const { student, trainer, logoutStudent, loading } = useAuth();
   const navigate = useNavigate();
 
+  // 🔹 Fetch courses from backend
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/courses");
+        setCourses(res.data);
+      } catch (err) {
+        console.error("Failed to fetch courses:", err);
+        toast.error("❌ Could not load courses");
+      }
+    };
+    fetchCourses();
+  }, []);
+
+  // 🔹 Navbar links
   const link = [
     { name: "Home", link: "/" },
     {
       name: "Courses",
-      dropdown: [
-        { name: "Data Science", link: "/Courses/dataScience" },
-        { name: "Artificial Intelligence", link: "/Courses/ai" },
-        { name: "Machine Learning", link: "/Courses/ml" },
-        { name: "AWS Solution Architect", link: "/Courses/aws" },
-        { name: "DevOps", link: "/Courses/devops" },
-        { name: "Azure Solution Architect", link: "/Courses/azureSolution" },
-        { name: "Linux Administration", link: "/Courses/linuxadmin" },
-        { name: "Advance Python Programming", link: "/Courses/python" },
-      ],
+      dropdown: courses.map((course) => ({
+        name: course.title,
+        link: `/Courses/${course._id}`,
+      })),
     },
     { name: "About", link: "/about" },
     { name: "Contact", link: "/contact" },
   ];
 
-  const courses = link.find((item) => item.name === "Courses")?.dropdown || [];
-
+  // 🔹 Filter search results
   const filteredCourses = courses.filter((course) =>
-    course.name.toLowerCase().includes(searchTerm.toLowerCase())
+    course.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // 🔹 Detect click outside search box
+  // 🔹 Close search when clicking outside
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
         setSearchOpen(false);
       }
-    }
-
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -77,18 +84,14 @@ export default function Navbar() {
     show: {
       x: 0,
       opacity: 1,
-      transition: { duration: 0.5, ease: "easeOut", staggerChildren: 0.15 },
+      transition: { duration: 0.5, staggerChildren: 0.15 },
     },
-    exit: {
-      x: "100%",
-      opacity: 0,
-      transition: { duration: 0.3, ease: "easeIn" },
-    },
+    exit: { x: "100%", opacity: 0, transition: { duration: 0.3 } },
   };
 
   const linkVariants = {
     hidden: { opacity: 0, x: 20 },
-    show: { opacity: 1, x: 0, transition: { duration: 0.4, ease: "easeOut" } },
+    show: { opacity: 1, x: 0, transition: { duration: 0.4 } },
   };
 
   const handleTrainerRegistration = () => {
@@ -97,9 +100,9 @@ export default function Navbar() {
   };
 
   return (
-    <div className="w-full bg-bgprimary top-0 left-0 z-50 fixed shadow-md">
+    <div className="w-full bg-bgprimary fixed top-0 left-0 z-50">
+      {/* Top Bar */}
       <Container>
-        {/* 🔝 Top Bar */}
         <div className="bg-bgprimary text-white text-xs sm:text-sm px-4 py-2 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6">
             <div className="flex items-center gap-2">
@@ -115,32 +118,28 @@ export default function Navbar() {
                 href="https://www.instagram.com/ganatech901/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-pink-500"
-              >
+                className="hover:text-pink-500">
                 <FaInstagram />
               </a>
               <a
                 href="https://www.facebook.com/ganatech.co.in"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-blue-600"
-              >
+                className="hover:text-blue-600">
                 <FaFacebook />
               </a>
               <a
                 href="https://www.youtube.com/channel/UC1T_OImlb4wBhbvcJ3-w_Hg"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-red-600"
-              >
+                className="hover:text-red-600">
                 <FaYoutube />
               </a>
               <a
                 href="https://x.com/ganatech123"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-gray-800"
-              >
+                className="hover:text-gray-800">
                 <FaXTwitter />
               </a>
             </div>
@@ -152,18 +151,16 @@ export default function Navbar() {
               <span className="text-white">Loading...</span>
             ) : (
               <>
-                {student && (
+                {student ? (
                   <span
                     onClick={() => {
                       logoutStudent();
                       toast.success("Logout successfully");
                     }}
-                    className="cursor-pointer text-sm font-semibold text-red-400 hover:text-red-600 flex items-center gap-1"
-                  >
+                    className="cursor-pointer text-sm font-semibold text-red-400 hover:text-red-600 flex items-center gap-1">
                     <IconUserCircle /> Logout
                   </span>
-                )}
-                {!student && (
+                ) : (
                   <>
                     <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
                       <IconUserCircle />
@@ -173,8 +170,7 @@ export default function Navbar() {
                     </div>
                     <span
                       onClick={handleTrainerRegistration}
-                      className="hover:text-primary whitespace-nowrap cursor-pointer"
-                    >
+                      className="hover:text-primary whitespace-nowrap cursor-pointer">
                       Trainer Registration
                     </span>
                   </>
@@ -184,7 +180,8 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* 🌐 Main Navbar */}
+        {/* Main Navbar */}
+
         <nav className="w-full flex justify-between items-center px-4 py-3 md:px-0 bg-bgprimary relative">
           {/* Logo */}
           <motion.div className="flex justify-center items-center gap-x-2 cursor-pointer">
@@ -206,51 +203,55 @@ export default function Navbar() {
 
           {/* Desktop Links */}
           <div className="md:flex hidden justify-center items-center gap-x-6 text-white text-md font-logo font-extralight relative">
-            {link.map((item, i) =>
-              item.dropdown ? (
-                <div
-                  key={i}
-                  className="relative"
-                  onMouseEnter={() => setDropdownOpen(item.name)}
-                  onMouseLeave={() => setDropdownOpen(null)}
-                >
-                  <span className="hover:text-primary cursor-pointer">
+            {link.map((item, i) => (
+              <div
+                key={i}
+                className="relative"
+                onMouseEnter={() => setDropdownOpen(item.name)}
+                onMouseLeave={() => setDropdownOpen(null)}>
+                {item.dropdown ? (
+                  <>
+                    <span className="hover:text-primary cursor-pointer">
+                      {item.name}
+                    </span>
+                    <AnimatePresence>
+                      {dropdownOpen === item.name && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute top-full left-0 mt-2 bg-white text-black font-light rounded-lg shadow-lg w-56 max-h-60 overflow-y-auto">
+                          {item.dropdown.length > 0 ? (
+                            item.dropdown.map((sub, idx) => (
+                              <Link
+                                key={idx}
+                                to={sub.link}
+                                className="block px-4 py-2 hover:bg-gray-200">
+                                {sub.name}
+                              </Link>
+                            ))
+                          ) : (
+                            <p className="text-sm text-gray-500 px-4 py-2">
+                              No courses found
+                            </p>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </>
+                ) : (
+                  <Link
+                    key={i}
+                    to={item.link}
+                    className="hover:text-primary transition-colors duration-300">
                     {item.name}
-                  </span>
-                  <AnimatePresence>
-                    {dropdownOpen === item.name && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 bg-white text-black font-light rounded-lg shadow-lg w-48 max-h-60 overflow-y-auto"
-                      >
-                        {item.dropdown.map((sub, idx) => (
-                          <Link
-                            key={idx}
-                            to={sub.link}
-                            className="block px-4 py-2 hover:bg-gray-200"
-                          >
-                            {sub.name}
-                          </Link>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ) : (
-                <Link
-                  key={i}
-                  to={item.link}
-                  className="hover:text-primary transition-colors duration-300 hover:cursor-pointer"
-                >
-                  {item.name}
-                </Link>
-              )
-            )}
+                  </Link>
+                )}
+              </div>
+            ))}
 
-            {/* 🔍 Search */}
+            {/* Search */}
             <div className="relative" ref={searchRef}>
               <IconSearch
                 size={22}
@@ -270,15 +271,14 @@ export default function Navbar() {
                     {filteredCourses.length > 0 ? (
                       filteredCourses.map((course) => (
                         <Link
-                          key={course.name}
-                          to={course.link}
+                          key={course._id}
+                          to={`/Courses/${course._id}`}
                           className="block px-2 py-1 hover:bg-gray-200 rounded"
                           onClick={() => {
                             setSearchOpen(false);
                             setSearchTerm("");
-                          }}
-                        >
-                          {course.name}
+                          }}>
+                          {course.title}
                         </Link>
                       ))
                     ) : (
@@ -307,121 +307,93 @@ export default function Navbar() {
             )}
           </div>
         </nav>
+      </Container>
 
-        {/* 📱 Mobile Menu */}
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              initial="hidden"
-              animate="show"
-              exit="exit"
-              variants={menuVariants}
-              className="absolute top-16 left-0 w-full h-screen bg-bgprimary px-6 py-10 md:hidden overflow-y-auto"
-            >
-              <div className="flex flex-col gap-y-6 mb-8 text-white text-lg font-logo font-extralight">
-                <motion.div variants={linkVariants}>
-                  <Link
-                    to="/"
-                    onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary transition-colors duration-300"
-                  >
-                    Home
-                  </Link>
-                </motion.div>
-
-                {/* Logout */}
-                {student && (
-                  <span
-                    onClick={() => {
-                      logoutStudent();
-                      setMenuOpen(false);
-                    }}
-                    className="cursor-pointer text-red-400 hover:text-red-600 flex items-center gap-2"
-                  >
-                    <IconUserCircle /> Logout
-                  </span>
-                )}
-
-                {/* Login / Trainer Registration */}
-                {!student && (
-                  <>
-                    <div className="flex items-center gap-x-2 text-primary hover:text-text-primary cursor-pointer">
-                      <IconUserCircle />
-                      <span className="text-sm font-semibold capitalize">
-                        <Link to="/login" onClick={() => setMenuOpen(false)}>
-                          Student Log in
-                        </Link>
-                      </span>
-                    </div>
-                    <span
-                      onClick={() => {
-                        setMenuOpen(false);
-                        handleTrainerRegistration();
-                      }}
-                      className="hover:text-primary cursor-pointer"
-                    >
-                      Trainer Registration
-                    </span>
-                  </>
-                )}
-
-                {/* Mobile Courses */}
-                <div>
-                  <span
-                    onClick={() => setCoursesOpen(!coursesOpen)}
-                    className="font-semibold text-white cursor-pointer flex justify-between items-center"
-                  >
-                    Courses <span>{coursesOpen ? "▲" : "▼"}</span>
-                  </span>
-                  {coursesOpen && (
-                    <div className="ml-4 mt-2 flex flex-col gap-y-2 max-h-60 overflow-y-auto">
-                      {courses.map((sub) => (
-                        <Link
-                          key={sub.name}
-                          to={sub.link}
-                          onClick={() => setMenuOpen(false)}
-                          className="text-sm hover:text-primary"
-                        >
-                          {sub.name}
-                        </Link>
-                      ))}
-                    </div>
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial="hidden"
+            animate="show"
+            exit="exit"
+            variants={menuVariants}
+            className="absolute top-16 left-0 w-full h-screen bg-bgprimary px-6 py-10 md:hidden overflow-y-auto">
+            <div className="flex flex-col gap-y-6 mb-8 text-white text-lg font-logo font-extralight">
+              {link.map((item, i) => (
+                <div key={i}>
+                  {item.dropdown ? (
+                    <details>
+                      <summary className="cursor-pointer font-medium py-2">
+                        {item.name}
+                      </summary>
+                      <div className="ml-4 mt-2 flex flex-col gap-y-2 max-h-60 overflow-y-auto">
+                        {item.dropdown.map((sub, idx) => (
+                          <Link
+                            key={idx}
+                            to={sub.link}
+                            className="text-sm hover:text-primary"
+                            onClick={() => setMenuOpen(false)}>
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </details>
+                  ) : (
+                    <Link
+                      to={item.link}
+                      className="block font-medium py-2 hover:text-primary"
+                      onClick={() => setMenuOpen(false)}>
+                      {item.name}
+                    </Link>
                   )}
                 </div>
+              ))}
 
-                <motion.div variants={linkVariants}>
+              {/* Mobile Student Login / Trainer Registration */}
+              {!student && (
+                <div className="flex flex-col gap-3 mt-4 border-t pt-4">
                   <Link
-                    to="/about"
+                    to="/login"
                     onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary transition-colors duration-300"
-                  >
-                    About
+                    className="text-white font-semibold py-2 px-4 rounded bg-blue-600 text-center hover:bg-blue-700 transition">
+                    Student Login
                   </Link>
-                </motion.div>
-                <motion.div variants={linkVariants}>
-                  <Link
-                    to="/contact"
-                    onClick={() => setMenuOpen(false)}
-                    className="hover:text-primary transition-colors duration-300"
-                  >
-                    Contact
-                  </Link>
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      handleTrainerRegistration();
+                    }}
+                    className="text-white font-semibold py-2 px-4 rounded bg-green-600 hover:bg-green-700 transition">
+                    Trainer Registration
+                  </button>
+                </div>
+              )}
 
-        {/* 📞 WhatsApp Button */}
-        <a
-          href="https://wa.me/918340901901"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="fixed bottom-6 right-6 bg-black text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition z-50"
-        >
-          <FaWhatsapp size={28} />
-        </a>
-      </Container>
+              {/* Mobile Logout if student logged in */}
+              {student && (
+                <span
+                  onClick={() => {
+                    logoutStudent();
+                    setMenuOpen(false);
+                    toast.success("Logout successfully");
+                  }}
+                  className="cursor-pointer text-red-400 hover:text-red-600 font-semibold py-2 px-4">
+                  Logout
+                </span>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* WhatsApp Button */}
+      <a
+        href="https://wa.me/918340901901"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 bg-black text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition z-50">
+        <FaWhatsapp size={28} />
+      </a>
     </div>
   );
 }

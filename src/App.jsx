@@ -34,6 +34,8 @@ import AdminPage from "./components/Admin/AdminPage.jsx";
 import EditTrainer from "./Pages/EditTrainer.jsx";
 import EditStudent from "./Pages/EditStudent.jsx";
 import AdminLogin from "./components/Admin/AdminLogin.jsx";
+import AdminProtectedRoute from "./components/ProtectedRoute/AdminProtectedRoute.jsx";
+import CourseDetails from "./components/Course/CourseDetails.jsx";
 
 function Home({ scale }) {
   return (
@@ -80,6 +82,8 @@ export default function App() {
         <Route path="/student-registration" element={<Student />} />
         <Route path="/trainer-registration" element={<Trainer />} />
         <Route path="/trainer-login" element={<TrainerLogin />} />
+        <Route path="/Courses/:id" element={<CourseDetails />} />
+        <Route path="/login" element={<Login />} />
 
         {/* ✅ Pass setShowNavbar to AdminPage */}
         <Route
@@ -99,7 +103,11 @@ export default function App() {
 
         <Route
           path="/admin-dashboard"
-          element={<AdminPage setShowNavbar={setShowNavbar} />}
+          element={
+            <AdminProtectedRoute>
+              <AdminPage setShowNavbar={setShowNavbar} />
+            </AdminProtectedRoute>
+          }
         />
 
         {/* ✅ Protected Trainer Route */}
@@ -113,7 +121,6 @@ export default function App() {
         />
         {/* Course */}
         <Route path="/course" element={<Course />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/Courses/dataScience" element={<DataScience />} />
         <Route path="/Courses/ai" element={<ArtificialIntelligence />} />
         <Route path="/Courses/ml" element={<MachineLearning />} />
