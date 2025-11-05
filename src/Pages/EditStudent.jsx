@@ -16,6 +16,9 @@ export default function EditStudent({ setShowNavbar }) {
   });
   const [loading, setLoading] = useState(true);
 
+  // ✅ Use your deployed backend URL
+  const BASE_URL = "http://localhost:5000";
+
   // Hide navbar on this page
   useEffect(() => {
     setShowNavbar(false);
@@ -25,7 +28,7 @@ export default function EditStudent({ setShowNavbar }) {
   // Fetch student data
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/students/${id}`)
+      .get(`${BASE_URL}/api/students/${id}`)
       .then((res) => {
         setStudent(res.data);
         setLoading(false);
@@ -44,7 +47,7 @@ export default function EditStudent({ setShowNavbar }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/students/${id}`, student);
+      await axios.put(`${BASE_URL}/api/students/${id}`, student);
       toast.success("✅ Student updated successfully!");
       navigate("/admin-dashboard");
     } catch (err) {

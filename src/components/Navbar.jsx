@@ -35,11 +35,14 @@ export default function Navbar() {
   const { student, trainer, logoutStudent, loading } = useAuth();
   const navigate = useNavigate();
 
+  // ✅ Use your deployed backend URL
+  const BASE_URL = "http://localhost:5000";
+
   // 🔹 Fetch courses from backend
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/courses");
+        const res = await axios.get(`${BASE_URL}/api/courses`);
         setCourses(res.data);
       } catch (err) {
         console.error("Failed to fetch courses:", err);

@@ -8,10 +8,13 @@ export default function CourseDetails() {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Use your deployed backend URL
+  const BASE_URL = "http://localhost:5000";
+
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/courses/${id}`);
+        const res = await axios.get(`${BASE_URL}/api/courses/${id}`);
         console.log("Course data:", res.data);
         setCourse(res.data);
       } catch (err) {
@@ -39,7 +42,7 @@ export default function CourseDetails() {
   const pdfLink = course?.pdfUrl
     ? course.pdfUrl.startsWith("http")
       ? course.pdfUrl
-      : `http://localhost:5000${course.pdfUrl}`
+      : `${BASE_URL}${course.pdfUrl}`
     : null;
 
   return (

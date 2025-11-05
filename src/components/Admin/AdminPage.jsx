@@ -32,6 +32,9 @@ export default function AdminPage({ setShowNavbar }) {
     aboutCourse: "",
   });
 
+  // ✅ Use your deployed backend URL
+  const BASE_URL = "http://localhost:5000";
+
   useEffect(() => {
     setShowNavbar(false);
     return () => setShowNavbar(true);
@@ -41,9 +44,9 @@ export default function AdminPage({ setShowNavbar }) {
     try {
       setLoading(true);
       const [trainersRes, studentsRes, coursesRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/trainers"),
-        axios.get("http://localhost:5000/api/students"),
-        axios.get("http://localhost:5000/api/courses"),
+        axios.get(`${BASE_URL}/api/trainers`),
+        axios.get(`${BASE_URL}/api/students`),
+        axios.get(`${BASE_URL}/api/courses`),
       ]);
       setTrainers(trainersRes.data);
       setStudents(studentsRes.data);
@@ -63,7 +66,7 @@ export default function AdminPage({ setShowNavbar }) {
   const handleDelete = async (id, type) => {
     if (!window.confirm("Are you sure you want to delete this item?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/${type}s/${id}`);
+      await axios.delete(`${BASE_URL}/api/${type}s/${id}`);
       if (type === "trainer") setTrainers(trainers.filter((t) => t._id !== id));
       else if (type === "student")
         setStudents(students.filter((s) => s._id !== id));
@@ -112,10 +115,10 @@ export default function AdminPage({ setShowNavbar }) {
 
     try {
       if (editId) {
-        await axios.put(`http://localhost:5000/api/courses/${editId}`, formData);
+        await axios.put(`${BASE_URL}/api/courses/${editId}`, formData);
         toast.success("✅ Course updated successfully!");
       } else {
-        await axios.post("http://localhost:5000/api/courses", formData);
+        await axios.post(`${BASE_URL}/api/courses`, formData);
         toast.success("✅ Course added successfully!");
       }
       setForm({
@@ -492,7 +495,7 @@ export default function AdminPage({ setShowNavbar }) {
                   <p className="text-gray-600 mb-3">{item.description}</p>
                   {item.pdfUrl && (
                     <a
-                      href={`http://localhost:5000${item.pdfUrl}`}
+                      href={`${BASE_URL}${item.pdfUrl}`}
                       download
                       className="inline-flex items-center text-red-600 hover:underline mb-3"
                     >

@@ -15,6 +15,9 @@ export default function TrainerPage({ setShowNavbar }) {
   const [trainers, setTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Use your deployed backend URL
+  const BASE_URL = "http://localhost:5000";
+
   // Hide Navbar when entering this page
   useEffect(() => {
     setShowNavbar(false);
@@ -24,7 +27,7 @@ export default function TrainerPage({ setShowNavbar }) {
   // Fetch trainers
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/trainers")
+      .get(`${BASE_URL}/api/trainers`)
       .then((res) => {
         setTrainers(res.data);
         setLoading(false);
@@ -42,7 +45,7 @@ export default function TrainerPage({ setShowNavbar }) {
     if (!window.confirm("Are you sure you want to delete this trainer?"))
       return;
     try {
-      await axios.delete(`http://localhost:5000/api/trainers/${id}`);
+      await axios.delete(`${BASE_URL}/api/trainers/${id}`);
       setTrainers(trainers.filter((trainer) => trainer._id !== id));
       toast.success("🗑️ Trainer deleted successfully!");
     } catch (err) {

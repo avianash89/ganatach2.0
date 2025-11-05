@@ -17,6 +17,9 @@ export default function EditTrainer({ setShowNavbar }) {
   });
   const [loading, setLoading] = useState(true);
 
+  // ✅ Use your deployed backend URL
+  const BASE_URL = "http://localhost:5000";
+
   // Hide navbar on this page
   useEffect(() => {
     setShowNavbar(false);
@@ -26,7 +29,7 @@ export default function EditTrainer({ setShowNavbar }) {
   // Fetch trainer data
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/trainers/${id}`)
+      .get(`${BASE_URL}/api/trainers/${id}`)
       .then((res) => {
         setTrainer(res.data);
         setLoading(false);
@@ -45,7 +48,7 @@ export default function EditTrainer({ setShowNavbar }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/trainers/${id}`, trainer);
+      await axios.put(`${BASE_URL}/api/trainers/${id}`, trainer);
       toast.success("✅ Trainer updated successfully!");
       navigate("/admin-dashboard");
     } catch (err) {

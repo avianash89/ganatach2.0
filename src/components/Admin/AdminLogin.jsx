@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -9,8 +9,11 @@ export default function AdminLogin({ setShowNavbar }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // ✅ Use your deployed backend URL
+  const BASE_URL = "http://localhost:5000";
+
   // Hide navbar on this page
-  useState(() => {
+  useEffect(() => {
     setShowNavbar(false);
     return () => setShowNavbar(true);
   }, [setShowNavbar]);
@@ -20,7 +23,7 @@ export default function AdminLogin({ setShowNavbar }) {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/admin/login", {
+      const res = await axios.post(`${BASE_URL}/api/admin/login`, {
         username,
         password,
       });

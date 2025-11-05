@@ -19,6 +19,9 @@ export default function StudentForm() {
   const [enteredOtp, setEnteredOtp] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ✅ Use your deployed backend URL
+  const BASE_URL = "http://localhost:5000";
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -32,7 +35,7 @@ export default function StudentForm() {
     setLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/students/signup-otp",
+        `${BASE_URL}/api/students/signup-otp`,
         formData,
         { withCredentials: true }
       );

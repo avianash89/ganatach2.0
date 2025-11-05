@@ -11,6 +11,9 @@ export default function TrainerLogin() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // ✅ Use your deployed backend URL
+  const BASE_URL = "http://localhost:5000";
+
   const handleSendOtp = async (e) => {
     e.preventDefault();
     if (!/^\d{10}$/.test(phoneNumber)) {
@@ -19,7 +22,7 @@ export default function TrainerLogin() {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/trainers/login-otp", {
+      const res = await fetch(`${BASE_URL}/api/trainers/login-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phoneNumber }),

@@ -11,12 +11,15 @@ export function AuthProvider({ children }) {
   const [admin, setAdmin] = useState(null); // ✅ Admin state
   const [loading, setLoading] = useState(true);
 
+  // ✅ Use your deployed backend URL
+  const BASE_URL = "http://localhost:5000";
+
   // ✅ Check login on refresh
   useEffect(() => {
     const checkAuth = async () => {
       // Student auth
       try {
-        const studentRes = await axios.get("http://localhost:5000/api/students/check-auth", {
+        const studentRes = await axios.get(`${BASE_URL}/api/students/check-auth`, {
           withCredentials: true,
         });
         setStudent(studentRes.data.student || null);
@@ -26,7 +29,7 @@ export function AuthProvider({ children }) {
 
       // Trainer auth
       try {
-        const trainerRes = await axios.get("http://localhost:5000/api/trainers/check-auth", {
+        const trainerRes = await axios.get(`${BASE_URL}/api/trainers/check-auth`, {
           withCredentials: true,
         });
         setTrainer(trainerRes.data.trainer || null);
@@ -38,7 +41,7 @@ export function AuthProvider({ children }) {
       try {
         const token = localStorage.getItem("adminToken");
         if (token) {
-          const res = await axios.get("http://localhost:5000/api/admin/me", {
+          const res = await axios.get(`${BASE_URL}/api/admin/me`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setAdmin(res.data.admin || null);
@@ -59,8 +62,8 @@ export function AuthProvider({ children }) {
   const loginWithOtp = async (role, mobile, otp) => {
     const endpoint =
       role === "student"
-        ? "http://localhost:5000/api/students/verify-otp"
-        : "http://localhost:5000/api/students/verify-otp";
+        ? `${BASE_URL}/api/students/verify-otp`
+        : `${BASE_URL}/api/students/verify-otp`;
 
     const res = await axios.post(endpoint, { mobile, enteredOtp: otp }, { withCredentials: true });
 
@@ -76,7 +79,7 @@ export function AuthProvider({ children }) {
   // ✅ Trainer OTP login
   const loginTrainerWithOtp = async (phoneNumber, enteredOtp) => {
     const res = await axios.post(
-      "http://localhost:5000/api/trainers/verify-otp",
+      `${BASE_URL}/api/trainers/verify-otp`,
       { phoneNumber, enteredOtp },
       { withCredentials: true }
     );
@@ -89,7 +92,7 @@ export function AuthProvider({ children }) {
 
   // ✅ Admin login
   const loginAdmin = async (username, password) => {
-    const res = await axios.post("http://localhost:5000/api/admin/login", { username, password });
+    const res = await axios.post(`${BASE_URL}/api/admin/login`, { username, password });
 
     if (res.data.success) {
       const token = res.data.token;
@@ -109,7 +112,7 @@ export function AuthProvider({ children }) {
   // ✅ Logout functions
   const logoutUser = async () => {
     try {
-      await axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true });
+      await axios.post(`${BASE_URL}/api/auth/logout`, {}, { withCredentials: true });
       setUser(null);
     } catch (err) {
       console.error("User logout failed:", err);
@@ -118,7 +121,7 @@ export function AuthProvider({ children }) {
 
   const logoutStudent = async () => {
     try {
-      await axios.post("http://localhost:5000/api/students/logout", {}, { withCredentials: true });
+      await axios.post(`${BASE_URL}/api/students/logout`, {}, { withCredentials: true });
       setStudent(null);
     } catch (err) {
       console.error("Student logout failed:", err);
@@ -127,7 +130,7 @@ export function AuthProvider({ children }) {
 
   const logoutTrainer = async () => {
     try {
-      await axios.post("http://localhost:5000/api/trainers/logout", {}, { withCredentials: true });
+      await axios.post(`${BASE_URL}/api/trainers/logout`, {}, { withCredentials: true });
       setTrainer(null);
     } catch (err) {
       console.error("Trainer logout failed:", err);

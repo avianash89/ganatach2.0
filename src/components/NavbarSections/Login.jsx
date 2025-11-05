@@ -10,6 +10,9 @@ export default function Login() {
   const [enteredOtp, setEnteredOtp] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ✅ Use your deployed backend URL
+  const BASE_URL = "http://localhost:5000";
+
   // 🔹 Send OTP via backend
   const handleSendOtp = async (e) => {
     e.preventDefault();
@@ -19,7 +22,7 @@ export default function Login() {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/students/login-otp", {
+      const res = await fetch(`${BASE_URL}/api/students/login-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mobile }),
