@@ -36,7 +36,7 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   // ✅ Use your deployed backend URL
-  const BASE_URL = "http://localhost:5000";
+  const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
   // 🔹 Fetch courses from backend
   useEffect(() => {

@@ -18,7 +18,7 @@ export default function EditTrainer({ setShowNavbar }) {
   const [loading, setLoading] = useState(true);
 
   // ✅ Use your deployed backend URL
-  const BASE_URL = "http://localhost:5000";
+  const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
   // Hide navbar on this page
   useEffect(() => {
